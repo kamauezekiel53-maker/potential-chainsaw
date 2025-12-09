@@ -3,196 +3,144 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Friendship Gift — Rose Edition 🌹</title>
-<meta name="description" content="Single-file Friendship Gift generator — rose gold UI with pages, music-synced visuals, stars & flame." />
+<title>Constellation — Rose Flip-Book Gift (Sender & Receiver)</title>
+<meta name="description" content="Single-file Gift generator and flip-book receiver. Generate links, share via WhatsApp. Music-synced visuals and rose-gold design." />
 <style>
-  /* ========== Rose / Romantic Single File Styles ========== */
+  /* ========== Styles (Rose / Flipbook) ========== */
   :root{
-    --bg:#0b0810;
-    --card:#1a0f18;
-    --muted:#e9dfe6;
-    --accent1:#ff8fb3;
-    --accent2:#f6d4b8;
-    --accent3:#9b5f8a;
-    --heart:#ff6b9a;
-    --glass: rgba(255,255,255,0.02);
-    --glass-border: rgba(255,255,255,0.04);
-    --radius:14px;
+    --bg:#07060a; --card:#0f1420; --muted:#eadfe6;
+    --accent1:#ff8fb3; --accent2:#f6d4b8; --accent3:#9b5f8a;
+    --glass: rgba(255,255,255,0.02); --glass-border: rgba(255,255,255,0.04);
+    --radius:12px;
   }
-  *{box-sizing:border-box;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:var(--muted)}
+  *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:var(--muted)}
   html,body{height:100%;margin:0;background:
     radial-gradient(1200px 600px at 10% 10%, rgba(255,140,160,0.06), transparent 8%),
     radial-gradient(800px 400px at 90% 90%, rgba(155,95,138,0.03), transparent 6%),
-    var(--bg);-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
-  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;gap:20px;flex-wrap:wrap;position:relative;z-index:2}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0.01));border:1px solid var(--glass-border);backdrop-filter: blur(6px) saturate(120%);border-radius:var(--radius);padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.6);max-width:980px;width:100%}
-  header{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-  .logo{width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(155,95,138,0.12);font-weight:700;color:#fff;font-size:24px}
-  h1{margin:0;font-size:22px;color:var(--accent2);letter-spacing:0.2px}
-  p.lead{margin:6px 0 10px;color:#f0e7ee;font-size:13px}
-  .grid{display:grid;grid-template-columns:1fr 480px;gap:18px}
-  @media(max-width:980px){ .grid{grid-template-columns:1fr} .logo{width:52px;height:52px} .video{height:220px} }
-  label{display:block;font-size:13px;margin-bottom:8px;color:#f6e9ef;font-weight:600}
-  input[type="text"], input[type="url"], input[type="tel"], select, textarea{
-    width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);outline:none;
+    var(--bg); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+  a{color:var(--accent2)}
+  .container{max-width:1100px;margin:26px auto;padding:18px;display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start;}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0.01));border:1px solid var(--glass-border);backdrop-filter: blur(6px) saturate(120%);border-radius:var(--radius);padding:18px;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+  /* Sender UI */
+  .left{flex:1;min-width:320px;max-width:520px}
+  .right{flex:1;min-width:360px;max-width:640px}
+  h1{margin:0;font-size:20px;color:var(--accent2)}
+  label{display:block;margin-top:10px;font-size:13px;color:#f6e9ef}
+  input[type=text], input[type=url], input[type=tel], select, textarea{
+    width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);margin-top:6px;
   }
-  textarea{min-height:96px;resize:vertical}
+  textarea{min-height:84px}
   .row{display:flex;gap:10px}
-  .col{flex:1}
-  .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-  button.btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
-  .primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;box-shadow:0 6px 18px rgba(255,140,160,0.08)}
+  .btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+  .primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10}
   .ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
   .copy{background:linear-gradient(90deg,#ffd6c8,#ffddea);color:#371a15}
-  #output{margin-top:12px;font-size:13px;color:#f3e9ef;word-break:break-word}
-  #output a{color:var(--accent2);text-decoration:none;display:inline-block;margin-top:6px}
-  .small{font-size:12px;color:#d9cdd6;margin-top:10px}
-
-  /* Preview area (right column) */
-  .previewCard{background:linear-gradient(180deg, rgba(255,255,255,0.008), rgba(255,255,255,0.006));border:1px solid rgba(255,255,255,0.02);padding:14px;border-radius:12px}
-  .video{width:100%;height:320px;border-radius:10px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
-  .video iframe,.video audio{width:100%;height:100%;border:0}
-  .letter{margin-top:12px;white-space:pre-wrap;color:#efdfe8;background:linear-gradient(180deg, rgba(255,240,245,0.02), transparent);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
-  .signature{margin-top:10px;font-weight:800;color:var(--accent1);text-align:right}
-  .messages{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-  .tile{flex:1;min-width:120px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));border:1px solid rgba(255,255,255,0.02);opacity:0;transform:translateY(12px);transition:all 480ms cubic-bezier(.2,.9,.2,1)}
-  .tile.show{opacity:1;transform:none;box-shadow:0 10px 30px rgba(0,0,0,0.45)}
-  .tile h3{margin:0;color:var(--accent3);font-size:15px}
-  .tile p{margin:8px 0 0;color:#f3e6ec;font-size:12px}
-
-  /* page container */
-  .book{margin-top:12px;position:relative;background:linear-gradient(180deg, rgba(255,255,255,0.006), transparent);border-radius:12px;padding:14px;border:1px solid rgba(255,255,255,0.02)}
-  .page{min-height:200px;padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(255,240,245,0.012), rgba(255,240,245,0.002));box-shadow:inset 0 1px 0 rgba(255,255,255,0.01);transform-origin:center;transition:all 600ms cubic-bezier(.2,.9,.2,1);opacity:0;transform:translateY(10px) scale(.995)}
-  .page.show{opacity:1;transform:none}
-  .pageTitle{font-size:18px;color:var(--accent3);margin:0 0 8px}
-
-  .pager{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px}
-  .pager .controls{display:flex;gap:8px}
-
-  /* stars canvas and flame */
-  canvas#stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;display:block}
-  .flameWrap{position:fixed;left:22px;bottom:22px;z-index:4;pointer-events:none}
-  .flame{
-    width:64px;height:64px;border-radius:20px;background: radial-gradient(circle at 30% 30%, rgba(255,220,190,0.95), rgba(255,180,200,0.9) 30%, rgba(255,140,160,0.75) 55%, rgba(155,50,80,0.4) 100%);
-    box-shadow:0 8px 40px rgba(255,120,160,0.08), inset 0 -6px 18px rgba(255,90,130,0.06);
-    transform-origin:center;animation:flameFloat 2500ms linear infinite;
-  }
-  @keyframes flameFloat{
-    0%{transform:translateY(0) rotate(-1deg) scale(1)}
-    50%{transform:translateY(-6px) rotate(1deg) scale(1.02)}
-    100%{transform:translateY(0) rotate(-1deg) scale(1)}
-  }
-
-  /* music ripple */
-  .rippleWrap{position:absolute;right:18px;top:18px;width:120px;height:120px;border-radius:999px;pointer-events:none;display:flex;align-items:center;justify-content:center}
-  .ripple{position:absolute;border-radius:999px;opacity:0.08;background:radial-gradient(circle at 30% 30%, rgba(255,140,160,0.9), rgba(246,212,184,0.7));transform:scale(0.2);transition:all 220ms linear}
-
-  /* hearts */
-  .hearts{position:fixed;right:18px;bottom:18px;z-index:5;pointer-events:none}
-  .heart{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--heart),#ff9fb9);display:flex;align-items:center;justify-content:center;color:white;box-shadow:0 8px 20px rgba(255,110,150,0.08);opacity:0;transform:translateY(20px) scale(0.95);transition:all 700ms cubic-bezier(.2,.9,.2,1)}
-
-  /* focus + access */
-  input:focus,textarea:focus,select:focus,button:focus{outline:2px solid rgba(255,140,160,0.12);outline-offset:2px}
+  #output{margin-top:12px;font-size:13px}
+  .small{font-size:12px;color:#e5d8de;margin-top:10px}
+  /* Preview / Flipbook */
+  .previewCard{display:none}
+  .previewCard.active{display:block}
+  .bookStage{perspective:1400px;display:flex;justify-content:center;align-items:center}
+  .book{width:680px;height:420px;position:relative;transform-style:preserve-3d}
+  .page{position:absolute;top:0;left:0;width:100%;height:100%;transform-style:preserve-3d;transform-origin:left center;border-radius:12px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.6);transition:transform 900ms cubic-bezier(.2,.9,.2,1)}
+  .page .sheet{padding:32px 40px;display:flex;flex-direction:column;justify-content:center;height:100%}
+  .frame{padding:18px;border-radius:10px;background:linear-gradient(180deg, rgba(255,240,245,0.02), rgba(255,240,245,0.002));border:1px solid rgba(255,255,255,0.02)}
+  .title{font-size:18px;margin-bottom:8px;color:var(--accent3)}
+  .text{white-space:pre-wrap;line-height:1.6;color:#efe1e7}
+  .back{position:absolute;inset:0;background:linear-gradient(180deg, rgba(6,6,8,0.6), rgba(4,4,6,0.45));transform:rotateY(180deg);backface-visibility:hidden}
+  .page.flipped{transform:rotateY(-180deg) translateX(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+  .controlsBar{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+  .pagerBtns{display:flex;gap:8px}
+  .tileRow{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .tile{flex:1;min-width:140px;padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));border:1px solid rgba(255,255,255,0.02);opacity:0;transform:translateY(12px);transition:all 480ms}
+  .tile.show{opacity:1;transform:none;box-shadow:0 8px 24px rgba(0,0,0,0.45)}
+  /* ripple/flame/hearts/stars */
+  canvas#stars{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  .flameWrap{position:fixed;left:20px;bottom:20px;z-index:5;pointer-events:none}
+  .flame{width:64px;height:64px;border-radius:18px;background:radial-gradient(circle at 30% 30%, rgba(255,220,190,0.95), rgba(255,180,200,0.9) 30%, rgba(255,140,160,0.75) 55%);box-shadow:0 8px 40px rgba(255,120,160,0.08);transform-origin:center;transition:transform 160ms}
+  .rippleWrap{position:absolute;right:16px;top:14px;width:120px;height:120px;pointer-events:none}
+  .ripple{position:absolute;border-radius:999px;opacity:0.06;background:radial-gradient(circle at 30% 30%, rgba(255,140,160,0.9), rgba(246,212,184,0.7));transform:scale(0.2);transition:all 220ms linear}
+  .signature{margin-top:12px;text-align:right;color:var(--accent1)}
+  .smallNote{font-size:12px;color:#e5d8de;margin-top:8px}
+  @media(max-width:980px){ .book{width:92vw;height:56vw} .left,.right{min-width:320px;max-width:unset} }
 </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
 
-<div class="wrap" role="main">
-  <div class="card" aria-live="polite">
-    <header>
-      <div class="logo">♡</div>
+<div class="container" role="main">
+  <!-- SENDER card -->
+  <div class="card left" id="senderCard" aria-live="polite">
+    <h1>Create a Rose Gift</h1>
+    <label>Your name</label>
+    <input id="from" type="text" placeholder="e.g. Ezekiel">
+
+    <label>Friend's name</label>
+    <input id="to" type="text" placeholder="e.g. Grace">
+
+    <label>WhatsApp (optional)</label>
+    <input id="wa" type="tel" placeholder="e.g. 254712345678">
+
+    <label>YouTube ID or MP3 URL</label>
+    <input id="media" type="text" placeholder="YouTube ID (dQw4...) or https://.../song.mp3">
+
+    <label>Autoplay?</label>
+    <select id="autoplay">
+      <option value="0">No</option>
+      <option value="1">Yes (muted for autoplay)</option>
+    </select>
+
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" id="genBtn">Generate Gift Link</button>
+      <button class="btn ghost" id="previewBtn">Preview</button>
+      <button class="btn copy" id="copyBtn">Copy Link</button>
+    </div>
+
+    <div id="output" class="smallNote">Your link will appear here after generation.</div>
+    <div class="small">Link format: <code>/gift?from=...&to=...&yt=...&num=...#finale</code> — when opened the recipient sees the flip-book.</div>
+  </div>
+
+  <!-- RECEIVER/Preview card (flipbook) -->
+  <div class="card right previewCard" id="previewCard" aria-hidden="true">
+    <div style="display:flex;justify-content:space-between;align-items:center">
       <div>
-        <h1>Friendship Gift — Rose Edition</h1>
-        <p class="lead">Create a delicate, music-backed gift with pages, a poem, and a romantic message sequence. Share by WhatsApp or any link.</p>
+        <div style="font-size:13px;color:#f0dfe6">A Gift for</div>
+        <div style="font-weight:800;font-size:18px" id="previewTo">Friend</div>
+        <div style="font-size:12px;color:#e9dfe6;margin-top:4px">From <strong id="previewFrom">You</strong></div>
       </div>
-    </header>
+      <div class="rippleWrap"><div id="ripple" class="ripple" style="width:120px;height:120px"></div></div>
+    </div>
 
-    <div class="grid">
-      <!-- LEFT: Form & controls -->
-      <div>
-        <div class="field">
-          <label for="fromName">Your name</label>
-          <input id="fromName" type="text" placeholder="e.g. Ebenezer" autocomplete="name">
-        </div>
+    <div class="bookStage" style="margin-top:12px">
+      <div class="book" id="book">
+        <!-- Pages (same content as before) -->
+        <div class="page" data-index="0">
+          <div class="sheet">
+            <div class="frame">
+              <div class="title">To the One My Heart Chose</div>
+              <div class="text" data-role="content" id="p0">My Beloved,
 
-        <div class="field">
-          <label for="toName">Friend's name</label>
-          <input id="toName" type="text" placeholder="e.g. Grace" autocomplete="name">
-        </div>
+There are moments in life when the world slows just enough for the heart to speak clearly.
+In those moments, it whispers your name.
 
-        <div class="field">
-          <label for="media">YouTube link or direct mp3 URL</label>
-          <input id="media" type="url" placeholder="YouTube URL or https://.../song.mp3">
-        </div>
+Your presence brings warmth to my days and peace to my nights. When I think of you, the world feels softer, gentler, and more beautiful. You are the quiet miracle I never knew how much I needed.
 
-        <div class="row" style="margin-top:8px">
-          <div class="col field">
-            <label for="waNumber">Friend's WhatsApp (optional)</label>
-            <input id="waNumber" type="tel" placeholder="e.g. 254712345678">
-          </div>
-          <div style="width:140px" class="col field">
-            <label for="autoplay">Autoplay?</label>
-            <select id="autoplay">
-              <option value="0">No</option>
-              <option value="1">Yes (muted for autoplay)</option>
-            </select>
-          </div>
-        </div>
+With you, ordinary moments become memories worth holding.
+With you, silence becomes comfort.
+With you, my heart finds its home.
 
-        <div class="actions">
-          <button class="btn primary" id="generateBtn">✨ Generate Gift Link</button>
-          <button class="btn ghost" id="previewBtn">👁 Preview</button>
-          <button class="btn copy" id="copyBtn">📋 Copy Link</button>
-        </div>
-
-        <div id="output" aria-atomic="true"></div>
-        <div class="small">Tip: For mp3 music-synced effects, use a direct mp3 URL that allows CORS. YouTube will fall back to visual pulse only.</div>
-      </div>
-
-      <!-- RIGHT: Preview / Pages -->
-      <div class="previewCard" id="previewCard" style="display:none;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start">
-          <div>
-            <div style="font-size:14px;color:#f0dfe6">A Gift for</div>
-            <div style="font-weight:800;font-size:18px" id="previewTo">Friend</div>
-            <div style="font-size:12px;color:#e9dfe6;margin-top:4px">From <strong id="previewFromName">You</strong></div>
-          </div>
-          <div class="rippleWrap" aria-hidden="true">
-            <div class="ripple" id="r1" style="width:120px;height:120px"></div>
-          </div>
-        </div>
-
-        <div class="video" id="playerHolder" aria-label="Media player area">
-          <div id="noMedia" style="color:#cbb9c6;padding:12px;text-align:center">No media provided — add a YouTube link or mp3 to preview playback and sync.</div>
-        </div>
-
-        <div class="book">
-          <!-- Pages -->
-          <div id="pageContainer">
-            <div class="page show" data-index="0" id="page0">
-              <div class="pageTitle">To the One My Heart Chose</div>
-              <div class="letter">
-                My Beloved,
-
-                There are moments in life when the world slows just enough for the heart to speak clearly.
-                In those moments, it whispers your name.
-
-                Your presence brings warmth to my days and peace to my nights. When I think of you, the world feels softer, gentler, and more beautiful. You are the quiet miracle I never knew how much I needed.
-
-                With you, ordinary moments become memories worth holding.
-                With you, silence becomes comfort.
-                With you, my heart finds its home.
-
-                Forever yours,
-                <span class="signature" id="sig0">[Your Name]</span>
-              </div>
+Forever yours,
+[Your Name]</div>
             </div>
+          </div>
+          <div class="back"></div>
+        </div>
 
-            <div class="page" data-index="1" id="page1">
-              <div class="pageTitle">A Letter Wrapped in Rose Light</div>
-              <div class="letter">
-My Beloved,
+        <div class="page" data-index="1">
+          <div class="sheet">
+            <div class="frame">
+              <div class="title">A Letter Wrapped in Rose Light</div>
+              <div class="text" data-role="content" id="p1">My Beloved,
 
 Like the dawn that paints the sky with tender light, your presence colors my world with beauty. Each heartbeat whispers your name, and every breath carries the memory of your touch. You are the poem my soul has longed to write, the melody that lingers in the quiet of night.
 
@@ -205,17 +153,20 @@ Your presence is my anchor.
 Your love, my guiding star.
 You are my muse, my heart’s soft rhythm, my forever.
 
-Let’s walk together through every season—through blossoming springs, golden autumns, warm summers, and peaceful winters. For with you, every season becomes radiant, every horizon filled with promise.
+Let’s walk together through every season— through blossoming springs, golden autumns, warm summers, and peaceful winters. For with you, every season becomes radiant, every horizon filled with promise.
 
 Forever yours,
-<span class="signature" id="sig1">[Your Name]</span>
-              </div>
+[Your Name]</div>
             </div>
+          </div>
+          <div class="back"></div>
+        </div>
 
-            <div class="page" data-index="2" id="page2">
-              <div class="pageTitle">If Love Had a Shape, It Would Be You</div>
-              <div class="letter">
-If love were a sunrise,
+        <div class="page" data-index="2">
+          <div class="sheet">
+            <div class="frame">
+              <div class="title">If Love Had a Shape, It Would Be You</div>
+              <div class="text" data-role="content" id="p2">If love were a sunrise,
 it would rise in your eyes.
 If love were a whisper,
 it would speak in your smile.
@@ -229,119 +180,128 @@ And if love were forever,
 then forever would begin
 the moment I found you.
 
-<span class="signature" id="sig2">— [Your Name]</span>
-              </div>
+— [Your Name]</div>
             </div>
+          </div>
+          <div class="back"></div>
+        </div>
 
-            <div class="page" data-index="3" id="page3">
-              <div class="pageTitle">Final Whisper</div>
-              <div class="letter">
-No matter where life takes us,
+        <div class="page" data-index="3">
+          <div class="sheet">
+            <div class="frame">
+              <div class="title">Final Whisper</div>
+              <div class="text" data-role="content" id="p3">No matter where life takes us,
 no matter how the winds may change,
 my heart will always carry the light you gave it.
 
 You are cherished.
 You are valued.
-You are loved — endlessly.
-
-<span class="signature" id="sig3">— [Your Name]</span>
-              </div>
+You are loved — endlessly.</div>
+              <div class="signature" id="sig">— [Your Name]</div>
             </div>
           </div>
-
-          <div class="pager">
-            <div class="controls">
-              <button class="btn ghost" id="prevPage">← Previous</button>
-              <button class="btn ghost" id="nextPage">Next →</button>
-            </div>
-            <div class="small" id="pageIndicator">Page 1 / 4</div>
-          </div>
-
+          <div class="back"></div>
         </div>
+      </div>
+    </div>
 
-        <div class="messages" id="messageTiles" style="margin-top:12px">
-          <!-- message tiles populated by script -->
-        </div>
+    <div class="controlsBar">
+      <div class="pagerBtns">
+        <button class="btn ghost" id="prevBtn">◂ Prev</button>
+        <button class="btn primary" id="turnBtn">Turn Page</button>
+        <button class="btn ghost" id="nextBtn">Next ▸</button>
+      </div>
 
-        <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
-          <button class="btn primary" id="playSequence">▶ Play Sequence</button>
-          <button class="btn ghost" id="shareBtn">🔗 Share</button>
-          <a id="waReply" href="#" target="_blank" class="btn" style="display:none;margin-left:auto;background:#25D366;color:#042">💬 Reply on WhatsApp</a>
-        </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div id="pageIndicator" class="smallNote">Page 1 / 4</div>
+        <div id="syncHint" class="smallNote">Sync: not set</div>
+        <a id="waReply" class="btn ghost" href="#" target="_blank" style="margin-left:10px;display:none">Reply on WhatsApp</a>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="tileRow" id="tileRow"></div>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button class="btn ghost" id="playSeqBtn">▶ Play Sequence</button>
+        <button class="btn ghost" id="replayBtn">↻ Replay</button>
+        <button class="btn ghost" id="shareBtn">🔗 Share</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Decorative flame & hearts -->
-<div class="flameWrap" aria-hidden="true">
-  <div class="flame" id="flameEl"></div>
-</div>
-<div class="hearts" aria-hidden="true">
-  <div id="heart1" class="heart">❤</div>
-</div>
+<!-- flame and ripple -->
+<div class="flameWrap"><div class="flame" id="flameEl"></div></div>
+<canvas id="fxcanvas" style="position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1"></canvas>
+
+<!-- Audio elements -->
+<audio id="audio" crossorigin="anonymous" style="display:none"></audio>
+<iframe id="ytIframe" style="display:none" sandbox="allow-scripts allow-same-origin"></iframe>
 
 <script>
-/* ===============================
-   Friendship Gift — Rose Edition
-   Single-file JS
-   - generator + preview
-   - pages + page-turn animation
-   - message sequence (Her Light -> Final Message)
-   - music visualizer for direct mp3s (Web Audio API)
-   - YouTube fallback pulse
-   - stars canvas & flame animation
-   =============================== */
+/* ===========================
+   Integrated Sender + Receiver
+   =========================== */
 
 (function(){
-  // Elements
-  const fromName = document.getElementById('fromName');
-  const toName = document.getElementById('toName');
-  const mediaInput = document.getElementById('media');
-  const waNumber = document.getElementById('waNumber');
-  const autoplay = document.getElementById('autoplay');
-  const generateBtn = document.getElementById('generateBtn');
+  // Elements: Sender
+  const senderCard = document.getElementById('senderCard');
+  const genBtn = document.getElementById('genBtn');
   const previewBtn = document.getElementById('previewBtn');
   const copyBtn = document.getElementById('copyBtn');
   const output = document.getElementById('output');
 
+  const fromInput = document.getElementById('from');
+  const toInput = document.getElementById('to');
+  const waInput = document.getElementById('wa');
+  const mediaInput = document.getElementById('media');
+  const autoplayInput = document.getElementById('autoplay');
+
+  // Elements: Receiver / Preview
   const previewCard = document.getElementById('previewCard');
   const previewTo = document.getElementById('previewTo');
-  const previewFromName = document.getElementById('previewFromName');
-  const playerHolder = document.getElementById('playerHolder');
-  const noMedia = document.getElementById('noMedia');
-
-  const pageContainer = document.getElementById('pageContainer');
-  const pages = Array.from(pageContainer.querySelectorAll('.page'));
-  const prevPage = document.getElementById('prevPage');
-  const nextPage = document.getElementById('nextPage');
-  const pageIndicator = document.getElementById('pageIndicator');
-
-  const messageTiles = document.getElementById('messageTiles');
-  const playSequenceBtn = document.getElementById('playSequence');
-  const shareBtn = document.getElementById('shareBtn');
+  const previewFrom = document.getElementById('previewFrom');
   const waReply = document.getElementById('waReply');
 
-  const ripple = document.getElementById('r1');
-  const heart1 = document.getElementById('heart1');
+  const book = document.getElementById('book');
+  const pages = Array.from(document.querySelectorAll('.page'));
+  const total = pages.length;
+  const pageIndicator = document.getElementById('pageIndicator');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const turnBtn = document.getElementById('turnBtn');
+
+  const tileRow = document.getElementById('tileRow');
+  const playSeqBtn = document.getElementById('playSeqBtn');
+  const replayBtn = document.getElementById('replayBtn');
+  const shareBtn = document.getElementById('shareBtn');
+
+  const ripple = document.getElementById('ripple');
   const flameEl = document.getElementById('flameEl');
+  const fxcanvas = document.getElementById('fxcanvas');
+  const fxctx = fxcanvas.getContext('2d');
+
+  const audioEl = document.getElementById('audio');
+  const ytIframe = document.getElementById('ytIframe');
 
   // Messages & final line
   const MESSAGES = ['Her Light','Her Strength','Her Mystery','Final Message'];
   const FINAL_LINE = 'May the music stay with her.';
 
   // State
-  let lastGeneratedLink = '';
-  let curPageIndex = 0;
-  let currentTimers = [];
+  let lastLink = '';
+  let cur = 0;
+  let messageTimers = [];
   let currentMediaType = ''; // 'mp3' or 'yt' or ''
-  let currentAudioEl = null;
-  let audioCtx = null;
-  let analyser = null;
-  let rafId = null;
-  let lastVolume = 0;
+  let currentYTId = '';
+  let currentMP3 = '';
+  let currentAudio = null;
+  let audioCtx = null, analyser = null, rafId = null;
+  let timestamps = [];
+  let syncInterval = null;
 
   // Utilities
+  function q(sel){ return document.querySelector(sel); }
   function encodeVal(s){ return encodeURIComponent((s||'').trim()); }
   function decodeVal(s){ try{return decodeURIComponent(s)}catch(e){return s||''} }
 
@@ -351,328 +311,372 @@ You are loved — endlessly.
     if(/^[A-Za-z0-9_-]{6,20}$/.test(input) && !input.includes('http')) return input;
     try {
       const u = new URL(input, location.origin);
-      const host = u.hostname;
-      if(host.includes('youtu.be')) return u.pathname.slice(1).split('/')[0];
-      if(host.includes('youtube') || host.includes('yewtu')){
+      if(u.hostname.includes('youtu.be')) return u.pathname.slice(1).split('/')[0];
+      if(u.hostname.includes('youtube') || u.hostname.includes('yewtu')) {
         if(u.searchParams.get('v')) return u.searchParams.get('v');
         const parts = u.pathname.split('/');
-        for(let i=parts.length-1;i>=0;--i){const seg=parts[i]; if(/^[A-Za-z0-9_-]{6,20}$/.test(seg)) return seg;}
+        for(let i=parts.length-1;i>=0;--i){ const seg=parts[i]; if(/^[A-Za-z0-9_-]{6,20}$/.test(seg)) return seg; }
       }
     } catch(e){
-      const trimmed = input.replace(/\s+/g,'');
-      if(/^[A-Za-z0-9_-]{6,20}$/.test(trimmed)) return trimmed;
+      const t = input.replace(/\s+/g,'');
+      if(/^[A-Za-z0-9_-]{6,20}$/.test(t)) return t;
     }
     return '';
   }
 
-  function buildLink(){
-    const from = (fromName.value||'').trim();
-    const to = (toName.value||'').trim();
-    const media = (mediaInput.value||'').trim();
-    const wa = (waNumber.value||'').trim();
-    const ap = autoplay.value === '1';
+  // Build link using /gift path (Option B)
+  function buildGiftLink(){
+    const from = (fromInput.value||'').trim();
+    const to = (toInput.value||'').trim();
+    const wa = (waInput.value||'').trim();
+    const med = (mediaInput.value||'').trim();
+    const ap = autoplayInput.value === '1';
 
-    if(!from || !to){
-      output.innerText = 'Please provide both your name and your friend\'s name.';
-      return '';
-    }
-    const base = location.origin + location.pathname;
+    if(!from || !to){ output.innerText = 'Please enter both names.'; return ''; }
+
+    // best-effort /gift path: if current path has folder, use origin + '/gift'
+    let base = location.origin + '/gift';
+    // If your host doesn't serve /gift, the link will still work because query params are used on same file.
     const params = new URLSearchParams();
     params.set('from', encodeVal(from));
     params.set('to', encodeVal(to));
-    const yt = extractYouTubeId(media);
+
+    const yt = extractYouTubeId(med);
     if(yt) params.set('yt', yt);
-    else if(media) params.set('mp3', encodeVal(media));
-    if(wa) params.set('wa', encodeVal(wa));
+    else if(med) params.set('mp3', encodeVal(med));
+
+    if(wa) params.set('num', encodeVal(wa));
     if(ap) params.set('autoplay','1');
+
     const url = `${base}?${params.toString()}#finale`;
-    lastGeneratedLink = url;
-    output.innerHTML = '🔗 Link ready: <a href="'+url+'" target="_blank" rel="noreferrer">'+url+'</a>';
+    lastLink = url;
+    output.innerHTML = '🔗 Link: <a href="'+url+'" target="_blank" rel="noreferrer">'+url+'</a>';
     return url;
   }
 
-  // Generate / copy
-  generateBtn.addEventListener('click', ()=>{
-    const url = buildLink();
+  // Sender actions
+  genBtn.addEventListener('click', ()=>{
+    const url = buildGiftLink();
     if(url){
+      previewCard.classList.add('active');
       previewCard.style.display = 'block';
+      previewCard.setAttribute('aria-hidden','false');
       populatePreviewFromUrl(url);
       animateHeart();
     }
   });
+
   copyBtn.addEventListener('click', async ()=>{
-    if(!lastGeneratedLink) {
-      const built = buildLink(); if(!built) return;
-    }
-    try { await navigator.clipboard.writeText(lastGeneratedLink); output.innerText='✅ Link copied to clipboard!';}
-    catch(e){ output.innerText='Copy failed — select the link and copy manually.'; }
+    if(!lastLink) { const built = buildGiftLink(); if(!built) return; }
+    try{ await navigator.clipboard.writeText(lastLink); output.innerText = '✅ Link copied to clipboard!'; }
+    catch(e){ output.innerText = 'Copy failed — select and copy manually.'; }
   });
-  previewBtn.addEventListener('click', ()=>{ const built = buildLink(); if(!built) return; populatePreviewFromUrl(built); previewCard.style.display='block'; });
 
-  // Page controls
-  function showPage(idx, direction){
-    pages.forEach((p,i)=>{ p.classList.toggle('show', i===idx); });
-    curPageIndex = idx;
-    pageIndicator.textContent = `Page ${idx+1} / ${pages.length}`;
-    // simple 3D effect
-    pages.forEach((p,i)=> {
-      p.style.transform = i === idx ? 'none' : 'translateY(8px) scale(.995)';
-      p.style.opacity = i === idx ? '1' : '0';
+  previewBtn.addEventListener('click', ()=>{
+    const built = buildGiftLink(); if(!built) return;
+    previewCard.classList.add('active'); previewCard.style.display='block'; populatePreviewFromUrl(built);
+  });
+
+  // Page rendering
+  function renderPages(){
+    pages.forEach((p, idx)=>{
+      if(idx < cur) p.classList.add('flipped'); else p.classList.remove('flipped');
+      // reveal current content
+      const el = p.querySelector('[data-role="content"]');
+      if(el) el.classList.toggle('visible', idx===cur);
+    });
+    pageIndicator.textContent = `Page ${cur+1} / ${total}`;
+  }
+  function goNext(){ if(cur < total-1){ cur++; renderPages(); } else { book.style.transform='translateY(-6px)'; setTimeout(()=>book.style.transform=''); } }
+  function goPrev(){ if(cur>0){ cur--; renderPages(); } else { book.style.transform='translateY(6px)'; setTimeout(()=>book.style.transform=''); } }
+  prevBtn.addEventListener('click', goPrev);
+  nextBtn.addEventListener('click', goNext);
+  turnBtn.addEventListener('click', goNext);
+  document.addEventListener('keydown',(e)=>{ if(e.key==='ArrowRight') goNext(); if(e.key==='ArrowLeft') goPrev(); });
+
+  // Message tiles
+  function renderTiles(){
+    tileRow.innerHTML = '';
+    MESSAGES.forEach((m,i)=>{
+      const d = document.createElement('div'); d.className='tile'; d.innerHTML = `<strong>${m}</strong><div style="margin-top:6px;font-size:12px;color:#f1dfe6">${i===MESSAGES.length-1?FINAL_LINE:''}</div>`;
+      tileRow.appendChild(d);
     });
   }
-  prevPage.addEventListener('click', ()=>{ showPage(Math.max(0,curPageIndex-1),'prev'); });
-  nextPage.addEventListener('click', ()=>{ showPage(Math.min(pages.length-1,curPageIndex+1),'next'); });
+  renderTiles();
 
-  // Message tiles render
-  function renderMessageTiles(){
-    messageTiles.innerHTML = '';
-    MESSAGES.forEach((m, i)=>{
-      const t = document.createElement('div'); t.className='tile'; t.innerHTML = `<h3>${m}</h3><p>${i===MESSAGES.length-1?FINAL_LINE:''}</p>`;
-      messageTiles.appendChild(t);
-    });
-  }
-  renderMessageTiles();
-
-  // Sequence
-  function clearTimers(){ currentTimers.forEach(t=>clearTimeout(t)); currentTimers=[]; }
+  // Sequence: reveal tiles & play audio
+  function clearMessageTimers(){ messageTimers.forEach(t=>clearTimeout(t)); messageTimers=[]; }
   function startSequence(){
-    clearTimers();
+    clearMessageTimers();
     const tiles = Array.from(document.querySelectorAll('.tile'));
     tiles.forEach(t=>t.classList.remove('show'));
-    // try to play media
-    attemptPlayMedia();
-    tiles.forEach((tile, idx) => {
-      const t = setTimeout(()=>{ tile.classList.add('show'); if(idx===tiles.length-1) unmuteIfNeeded(); }, 800 + idx * 2200);
-      currentTimers.push(t);
+    attemptPlay();
+    tiles.forEach((tile, idx)=>{
+      const t = setTimeout(()=>{ tile.classList.add('show'); if(idx===tiles.length-1) unmuteIfNeeded(); }, 800 + idx*2200);
+      messageTimers.push(t);
     });
   }
-  playSequenceBtn.addEventListener('click', ()=>startSequence());
+  playSeqBtn.addEventListener('click', startSequence);
+  replayBtn.addEventListener('click', ()=>{ clearMessageTimers(); startSequence(); });
 
-  // Populate preview from URL or form
-  function populatePreviewFromUrl(url){
-    const u = new URL(url);
-    const params = u.searchParams;
-    const from = decodeVal(params.get('from') || fromName.value || 'Friend');
-    const to = decodeVal(params.get('to') || toName.value || 'Friend');
-    const yt = params.get('yt') || '';
-    const mp3 = params.get('mp3') ? decodeVal(params.get('mp3')) : '';
-    const wa = params.get('wa') ? decodeVal(params.get('wa')) : '';
-    const ap = params.get('autoplay') === '1';
-
-    previewTo.textContent = to || 'Friend';
-    previewFromName.textContent = from || 'You';
-    // fill signatures
-    pages.forEach((p,idx)=>{ const s=p.querySelector('.signature'); if(s) s.textContent = `— ${from||'[Your Name]'}`; });
-
-    // player
-    playerHolder.innerHTML = '';
-    noMedia.style.display = 'none';
-    currentMediaType = '';
-    currentAudioEl = null;
-    stopAudioVisualization();
-
-    if(yt){
-      currentMediaType = 'yt';
-      // embed with modest params; we cannot access audio data cross-origin
-      const params = new URLSearchParams({rel:'0',modestbranding:'1',playsinline:'1'});
-      if(ap) { params.set('autoplay','1'); params.set('mute','1'); }
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${encodeURIComponent(yt)}?${params.toString()}`;
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-      iframe.allowFullscreen = true;
-      playerHolder.appendChild(iframe);
-      // fallback pulse
-      startPulseFallback();
-    } else if(mp3){
-      currentMediaType = 'mp3';
-      const audio = document.createElement('audio');
-      audio.controls = true;
-      audio.src = mp3;
-      audio.crossOrigin = 'anonymous';
-      if(ap){ audio.autoplay = true; audio.muted = true; /* try muted autoplay */ }
-      playerHolder.appendChild(audio);
-      currentAudioEl = audio;
-      // set up audio analyser
-      setupAudioVisualization(audio);
+  // Share behavior
+  shareBtn.addEventListener('click', ()=>{
+    const link = lastLink || buildGiftLink();
+    if(!link) return;
+    // if num present use wa share
+    const params = new URLSearchParams((new URL(link)).search);
+    const num = params.get('num');
+    if(num){
+      const msg = `A gift for you: ${link}`;
+      window.open(`https://wa.me/${encodeURIComponent(num)}?text=${encodeURIComponent(msg)}`, '_blank');
+      return;
+    }
+    if(navigator.share){
+      navigator.share({ title: `A gift for ${decodeVal(params.get('to')||'friend')}`, text:'Open this lovely gift', url:link }).catch(()=>{});
     } else {
-      noMedia.style.display = 'block';
+      navigator.clipboard?.writeText(link).then(()=>alert('Link copied')).catch(()=>alert('Could not share'));
     }
+  });
 
-    // WhatsApp reply
-    if(wa){
-      let normalized = wa.replace(/\s+/g,'').replace(/^\+/, '');
-      const text = `Hi ${from}, thanks for the beautiful gift!`;
-      waReply.href = `https://wa.me/${encodeURIComponent(normalized)}?text=${encodeURIComponent(text)}`;
-      waReply.style.display = 'inline-block';
-    } else waReply.style.display = 'none';
+  /* ------------------------------
+     Media handling & visual sync
+     ------------------------------ */
+  function populatePreviewFromUrl(url){
+    try{
+      const u = new URL(url, location.origin);
+      const params = u.searchParams;
+      const from = decodeVal(params.get('from')||'Sender');
+      const to = decodeVal(params.get('to')||'Friend');
+      const yt = params.get('yt') || '';
+      const mp3 = params.get('mp3') ? decodeVal(params.get('mp3')) : '';
+      const num = params.get('num') ? decodeVal(params.get('num')) : '';
+      const ap = params.get('autoplay')==='1';
 
-    // If hash finale, auto-start sequence after tiny delay
-    if(u.hash && u.hash.replace('#','') === 'finale'){
-      setTimeout(()=>startSequence(), 600);
+      previewFrom.textContent = from;
+      previewTo.textContent = to;
+      // place names into pages
+      pages.forEach((p, idx)=>{
+        const sig = p.querySelector('.signature');
+        if(sig) sig.textContent = `— ${from}`;
+      });
+
+      // WhatsApp reply
+      if(num){
+        waReply.href = `https://wa.me/${encodeURIComponent(num)}?text=${encodeURIComponent('Hi '+from+', thanks for the gift!')}`;
+        waReply.style.display = 'inline-block';
+      } else waReply.style.display = 'none';
+
+      // prepare media
+      resetMedia();
+
+      if(yt){
+        currentMediaType = 'yt'; currentYTId = yt;
+        // embed with autoplay+mute if ap
+        const embed = `https://www.youtube.com/embed/${encodeURIComponent(yt)}?rel=0&modestbranding=1&playsinline=1${ap? '&autoplay=1&mute=1':''}`;
+        ytIframe.src = embed;
+        ytIframe.style.display = 'block';
+        audioEl.src = '';
+        syncHint.textContent = 'Sync: YouTube (use Auto-Sync manually)';
+        startFallbackPulse();
+      } else if(mp3){
+        currentMediaType = 'mp3'; currentMP3 = mp3;
+        audioEl.src = mp3;
+        audioEl.crossOrigin = 'anonymous';
+        audioEl.load();
+        if(ap){ audioEl.muted = true; audioEl.autoplay = true; }
+        audioEl.onloadedmetadata = ()=> {
+          setAutoTimestamps(audioEl.duration);
+          // auto-start sync
+          startSync();
+        };
+        audioEl.onended = ()=> stopSync();
+        setupAudioVisualizer(audioEl);
+        stopFallbackPulse();
+      } else {
+        // no media
+        syncHint.textContent = 'Sync: not set';
+        ytIframe.style.display = 'none';
+        stopFallbackPulse();
+      }
+
+      // show preview card
+      previewCard.style.display='block';
+      previewCard.setAttribute('aria-hidden','false');
+      renderPages();
+
+      // if URL hash finale => auto-start sequence
+      if(u.hash && u.hash.replace('#','')==='finale'){ setTimeout(()=> startSequence(), 600); }
+
+    }catch(e){
+      console.error(e);
     }
-
-    showPage(0);
   }
 
-  // Audio visualization (for mp3)
-  function setupAudioVisualization(audioEl){
-    stopAudioVisualization();
+  function resetMedia(){
+    // stop audio + visualizer
+    try{ audioEl.pause(); audioEl.src=''; }catch(e){}
+    stopVisualizer(); stopFallbackPulse();
+    ytIframe.src=''; ytIframe.style.display='none';
+    currentMediaType=''; currentMP3=''; currentYTId='';
+  }
+
+  // WebAudio visualizer for MP3
+  function setupAudioVisualizer(audio){
+    stopVisualizer();
     try {
       audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const source = audioCtx.createMediaElementSource(audioEl);
+      const source = audioCtx.createMediaElementSource(audio);
       analyser = audioCtx.createAnalyser();
       analyser.fftSize = 256;
       source.connect(analyser);
       analyser.connect(audioCtx.destination);
       runVisualizer();
     } catch(e){
-      // failed (maybe cross-origin or browser), fallback to pulse
-      startPulseFallback();
+      startFallbackPulse();
     }
   }
   function runVisualizer(){
-    const bufferLength = analyser.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-    function tick(){
-      analyser.getByteFrequencyData(dataArray);
-      let sum = 0;
-      for(let i=0;i<dataArray.length;i++){ sum += dataArray[i]; }
-      const avg = sum / dataArray.length;
-      applyVisualPulse(avg/255);
-      rafId = requestAnimationFrame(tick);
+    if(!analyser) return;
+    const data = new Uint8Array(analyser.frequencyBinCount);
+    function frame(){
+      analyser.getByteFrequencyData(data);
+      let sum=0;
+      for(let i=0;i<data.length;i++){ sum+=data[i]; }
+      const avg = sum/data.length/255;
+      applyPulse(avg);
+      rafId = requestAnimationFrame(frame);
     }
-    tick();
+    frame();
   }
-  function stopAudioVisualization(){
+  function stopVisualizer(){
     if(rafId) cancelAnimationFrame(rafId);
-    rafId = null;
-    if(audioCtx){ try{ audioCtx.close(); }catch(e){} audioCtx = null; analyser = null; }
+    rafId=null;
+    if(audioCtx){ try{ audioCtx.close(); }catch(e){} audioCtx=null; analyser=null; }
   }
 
-  // Visual pulse: scale ripple & flame intensity
-  function applyVisualPulse(strength){
-    const s = Math.min(1, Math.max(0, strength*1.6));
+  // Fallback pulse when we can't analyze audio (YouTube or blocked)
+  let fallbackPulseInterval = null;
+  function startFallbackPulse(){
+    if(fallbackPulseInterval) return;
+    let on=false;
+    fallbackPulseInterval = setInterval(()=>{ on=!on; applyPulse(on?0.45:0.12); }, 500);
+  }
+  function stopFallbackPulse(){ if(fallbackPulseInterval){ clearInterval(fallbackPulseInterval); fallbackPulseInterval=null; } }
+
+  function applyPulse(str){
+    const s = Math.min(1, Math.max(0, str*1.6));
     ripple.style.transform = `scale(${0.4 + s*1.2})`;
     ripple.style.opacity = `${0.05 + s*0.18}`;
     flameEl.style.transform = `scale(${1 + s*0.08}) translateY(${ -s*4 }px)`;
-    // subtle page glow
-    pageContainer.style.boxShadow = `0 10px 40px rgba(255,140,160,${0.02 + s*0.04})`;
   }
 
-  // Fallback pulse for YouTube or when analyser unavailable
-  let pulseInterval = null;
-  function startPulseFallback(){
-    if(pulseInterval) return;
-    let on = false;
-    pulseInterval = setInterval(()=>{
-      on = !on;
-      applyVisualPulse(on ? 0.45 : 0.1);
-    }, 500);
-  }
-  function stopPulseFallback(){ if(pulseInterval){ clearInterval(pulseInterval); pulseInterval=null; } }
+  function attemptPlay(){ try{ if(currentMediaType==='mp3' && audioEl) audioEl.play().catch(()=>{}); }catch(e){} }
+  function unmuteIfNeeded(){ try{ if(currentMediaType==='mp3' && audioEl && audioEl.muted){ audioEl.muted=false; audioEl.play().catch(()=>{}); } }catch(e){} }
 
-  // Attempt to play media
-  function attemptPlayMedia(){
-    try {
-      if(currentMediaType === 'mp3' && currentAudioEl){
-        currentAudioEl.play().catch(()=>{ /* autoplay blocked */ });
-      }
-    } catch(e){}
+  // Simple auto-timestamps for syncing pages across duration
+  function setAutoTimestamps(duration){
+    timestamps = [];
+    for(let i=0;i<total;i++){ timestamps.push(Math.max(0, Math.min(duration, (duration * i) / total))); }
+    syncHint.textContent = `Sync: auto (${Math.round(duration)}s)`;
   }
-  function unmuteIfNeeded(){
-    try{
-      if(currentMediaType === 'mp3' && currentAudioEl){
-        if(currentAudioEl.muted) { currentAudioEl.muted = false; currentAudioEl.play().catch(()=>{}); }
-      }
-    } catch(e){}
+  function startSync(){
+    stopSync();
+    if(!audioEl || !audioEl.src) return;
+    syncInterval = setInterval(()=>{
+      const t = audioEl.currentTime;
+      let idx = 0;
+      for(let i=0;i<timestamps.length;i++){ if(t >= timestamps[i]) idx = i; }
+      if(idx !== cur){ cur = idx; renderPages(); }
+    }, 250);
+  }
+  function stopSync(){ if(syncInterval) clearInterval(syncInterval); syncInterval=null; }
+
+  // Fallback: ask user for approximate duration (used when YouTube)
+  function promptDurationAndSync(){
+    const ans = prompt('Track duration in seconds (approx):', '120');
+    const d = Number(ans);
+    if(d && !isNaN(d)){ setAutoTimestamps(d); startSync(); } else alert('Invalid duration');
   }
 
-  // Share button behavior
-  shareBtn.addEventListener('click', ()=>{
-    const link = lastGeneratedLink || buildLink();
-    if(!link) return;
-    const params = new URLSearchParams((new URL(link)).search);
-    const wa = params.get('wa');
-    if(wa){
-      const msg = `A gift for you: ${link}`;
-      window.open(`https://wa.me/${encodeURIComponent(wa)}?text=${encodeURIComponent(msg)}`, '_blank');
-      return;
-    }
-    if(navigator.share){
-      navigator.share({ title:`A gift for ${decodeURIComponent(params.get('to')||'friend')}`, text:`A small gift for you`, url:link }).catch(()=>{});
-    } else {
-      navigator.clipboard?.writeText(link).then(()=>{ alert('Link copied to clipboard'); }).catch(()=>{ alert('Share not supported'); });
-    }
+  // buttons for start / replay etc. (replay resets and plays)
+  document.getElementById('replayBtn').addEventListener('click', ()=>{
+    cur = 0; renderPages();
+    if(currentMediaType==='mp3'){ audioEl.currentTime = 0; audioEl.play().catch(()=>{}); startSync(); }
+    else promptDurationAndSync();
   });
 
-  // tiny heart animation on generate
+  // tiny heart / flair animation on generate
   function animateHeart(){
-    heart1.style.opacity = '1';
-    heart1.style.transform = 'translateY(0) scale(1)';
-    setTimeout(()=>{ heart1.style.opacity = '0'; heart1.style.transform = 'translateY(-14px) scale(.9)'; }, 900);
+    const h = document.createElement('div'); h.className='tile'; h.style.position='fixed'; h.style.right='20px'; h.style.bottom='20px'; h.style.width='48px'; h.style.height='48px'; h.style.borderRadius='12px'; h.style.background='linear-gradient(135deg,var(--accent1),var(--accent2))'; h.style.display='flex'; h.style.alignItems='center'; h.style.justifyContent='center'; h.style.zIndex=9999; h.style.transform='translateY(8px)'; h.style.opacity='0'; h.innerText='❤';
+    document.body.appendChild(h);
+    requestAnimationFrame(()=>{ h.style.transition='all 700ms'; h.style.transform='translateY(0)'; h.style.opacity='1'; });
+    setTimeout(()=>{ h.style.transform='translateY(-20px)'; h.style.opacity='0'; setTimeout(()=>h.remove(),700); }, 900);
   }
 
-  // small start: if page has ?from param, auto-populate preview
-  (function initFromLocation(){
-    const params = new URLSearchParams(location.search);
-    if(params.has('from')){
-      previewCard.style.display = 'block';
-      populatePreviewFromUrl(location.href);
-    }
-  })();
-
-  // Page-turn keyboard shortcuts
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === 'ArrowRight') nextPage.click();
-    if(e.key === 'ArrowLeft') prevPage.click();
-  });
-
-  // Accessibility: Enter on inputs triggers generate
-  [fromName,toName,mediaInput,waNumber].forEach(el=>el.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); generateBtn.click(); } }));
-
-  // Stars canvas
-  (function starfield(){
-    const canvas = document.getElementById('stars');
-    if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let w = innerWidth, h = innerHeight;
-    function resize(){
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      canvas.width = Math.round(innerWidth * dpr);
-      canvas.height = Math.round(innerHeight * dpr);
-      canvas.style.width = innerWidth + 'px';
-      canvas.style.height = innerHeight + 'px';
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-      w = innerWidth; h = innerHeight;
-    }
-    resize();
-    addEventListener('resize', resize);
+  // Stars / flames canvas
+  (function starsFx(){
+    const canvas = fxcanvas;
+    const ctx = fxctx;
+    let W = canvas.width = innerWidth;
+    let H = canvas.height = innerHeight;
+    window.addEventListener('resize', ()=>{ W = canvas.width = innerWidth; H = canvas.height = innerHeight; });
     const stars = [];
-    const count = Math.max(80, Math.round((innerWidth*innerHeight)/9000));
-    for(let i=0;i<count;i++){
-      stars.push({ x: Math.random()*w, y: Math.random()*h, r: Math.random()*1.6+0.2, vx:(Math.random()-0.5)*0.25, a: Math.random()*0.9+0.1});
-    }
-    function draw(){
-      ctx.clearRect(0,0,w,h);
-      for(const s of stars){
-        s.x += s.vx;
-        if(s.x < -10) s.x = w+10;
-        if(s.x > w+10) s.x = -10;
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(255,240,245,${s.a})`;
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
-        ctx.fill();
-      }
-      requestAnimationFrame(draw);
+    for(let i=0;i<140;i++) stars.push({x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.6+0.2, vy:Math.random()*0.2+0.02, a:Math.random()*0.9+0.1});
+    const flames = [];
+    function spawnFlame(){ const cx = innerWidth*0.12; const baseY = innerHeight*0.82; for(let i=0;i<3;i++){ flames.push({x:cx+(Math.random()*80-40), y:baseY+Math.random()*30, vx:(Math.random()-0.5)*0.6, vy:-(Math.random()*1.4+0.6), life:Math.random()*50+40, maxLife:Math.random()*50+60, size:Math.random()*16+8, hue: 18+Math.random()*30}); } }
+    setInterval(spawnFlame, 900);
+    function draw(){ ctx.clearRect(0,0,W,H); // vignette
+      const g = ctx.createRadialGradient(W/2,H/2,100,W/2,H/2,Math.max(W,H)); g.addColorStop(0,'rgba(255,204,200,0.02)'); g.addColorStop(1,'rgba(0,0,0,0.4)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+      for(const s of stars){ s.x += s.vy; if(s.x>W+10) s.x=-10; ctx.globalAlpha = s.a; ctx.fillStyle='rgba(255,240,245,1)'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill(); }
+      for(let i=flames.length-1;i>=0;i--){ const f=flames[i]; f.x+=f.vx; f.y+=f.vy; f.life--; const p=f.life/f.maxLife; ctx.globalAlpha=Math.max(0,p); const grad=ctx.createRadialGradient(f.x,f.y,0,f.x,f.y,f.size*1.6); grad.addColorStop(0,`hsla(${f.hue},90%,60%,${0.9*p})`); grad.addColorStop(0.6,`hsla(${f.hue+20},90%,50%,${0.5*p})`); grad.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(f.x,f.y,f.size*(1.2-p*0.6),0,Math.PI*2); ctx.fill(); if(f.life<=0) flames.splice(i,1); }
+      ctx.globalAlpha=1; requestAnimationFrame(draw);
     }
     draw();
   })();
 
-  // cleanup on unload
-  window.addEventListener('beforeunload', ()=>{ stopAudioVisualization(); stopPulseFallback(); clearTimers(); });
+  // Page click to turn (right half = next, left half = prev)
+  book.addEventListener('click',(e)=>{
+    const r = book.getBoundingClientRect(); const x = e.clientX - r.left;
+    if(x > r.width/2) goNext(); else goPrev();
+  });
 
-  // expose for debugging
-  window._friendshipGift = { buildLink, startSequence, populatePreviewFromUrl };
+  // Init from current location (if query contains from OR pathname includes '/gift')
+  (function initFromUrl(){
+    const qs = location.search;
+    const hasFrom = new URLSearchParams(qs).has('from');
+    const isGiftPath = location.pathname.includes('/gift') || location.pathname.endsWith('/gift') || location.pathname.endsWith('/gift/');
+    if(hasFrom || isGiftPath){
+      // parse the query parameters from location.search
+      const params = new URLSearchParams(location.search);
+      const from = decodeVal(params.get('from')||'');
+      const to = decodeVal(params.get('to')||'');
+      const mp3 = params.get('mp3') ? decodeVal(params.get('mp3')) : '';
+      const yt = params.get('yt') || '';
+      const num = params.get('num') || '';
+      const ap = params.get('autoplay') === '1';
+      // prefill sender fields (nice for owner)
+      if(from) fromInput.value = from;
+      if(to) toInput.value = to;
+      if(num) waInput.value = num;
+      if(mp3) mediaInput.value = mp3;
+      if(yt) mediaInput.value = yt;
+      if(ap) autoplayInput.value = '1';
+      // show preview and populate
+      const fullUrl = location.href;
+      previewCard.style.display='block';
+      previewCard.setAttribute('aria-hidden','false');
+      populatePreviewFromUrl(fullUrl);
+    }
+  })();
+
+  // Keyboard Enter triggers generate
+  [fromInput,toInput,mediaInput,waInput].forEach(el=>el.addEventListener('keydown',(e)=>{ if(e.key==='Enter'){ genBtn.click(); } }));
+
+  // helper: friendly sync prompt (user can call via browser console)
+  window._gift = { buildGiftLink: buildGiftLink, populatePreviewFromUrl: populatePreviewFromUrl, startSequence: ()=>startSequence() };
+
+  // small helper UI feedback for manual sync: clicking pageIndicator prompts for duration
+  pageIndicator.addEventListener('click', ()=>{ promptDurationAndSync(); });
 
 })();
 </script>
