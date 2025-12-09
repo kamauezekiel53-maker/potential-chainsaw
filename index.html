@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Constellation Gift — Single File</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  margin:0;
+  padding:0;
+  background:#050c19;
+  font-family:Arial, sans-serif;
+  color:#eaf6ff;
+}
+.container{
+  max-width:600px;
+  margin:25px auto;
+  padding:18px;
+  background:#0d1629;
+  border-radius:12px;
+  box-shadow:0 8px 30px rgba(0,0,0,.6);
+}
+h1{color:#8bd3ff;font-size:22px;margin:0 0 14px}
+.input{
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  border-radius:8px;
+  border:1px solid #20304a;
+  background:#0a1322;
+  color:#eaf6ff;
+}
+.btn{
+  background:#8bd3ff;
+  color:#08212e;
+  padding:10px 14px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.btn.ghost{
+  background:#0a1322;
+  border:1px solid #20304a;
+  color:#cbe7ff;
+}
+.section{
+  background:#0a1322;
+  padding:14px;
+  border-radius:8px;
+  margin-top:16px;
+}
+.message{
+  opacity:0;
+  transform:translateY(10px);
+  transition:all 0.5s;
+  background:#0b1424;
+  border:1px solid #1c2b43;
+  padding:10px;
+  border-radius:8px;
+  margin-top:10px;
+}
+.message.visible{
+  opacity:1;
+  transform:translateY(0);
+}
+.player{
+  margin-top:12px;
+}
+iframe, audio{
+  width:100%;
+  border-radius:8px;
+  border:1px solid #20304a;
+}
+.shareRow{
+  margin-top:12px;
+  display:flex;
+  gap:10px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Constellation Gift — Builder</h1>
+
+<div class="section">
+  <p>YouTube link / mp3 link:</p>
+  <input id="mediaInput" class="input" placeholder="Paste YouTube link or mp3 URL">
+
+  <p style="margin-top:12px;">Recipient WhatsApp Number:</p>
+  <input id="waInput" class="input" placeholder="e.g. 254712345678">
+
+  <button class="btn" style="margin-top:12px" onclick="generateGift()">Generate Gift Link</button>
+</div>
+
+<div id="output" class="section" style="display:none;">
+  <p>Gift link:</p>
+  <input id="giftLink" class="input" readonly>
+
+  <div class="shareRow">
+    <button class="btn" onclick="copyLink()">Copy</button>
+    <button class="btn ghost" onclick="openGift()">Open</button>
+  </div>
+
+  <div class="shareRow">
+    <button class="btn" onclick="shareWhatsApp()">Share via WhatsApp</button>
+    <button class="btn ghost" onclick="nativeShare()">Share…</button>
+  </div>
+</div>
+
+<hr style="margin:20px 0;border-color:#112233">
+
+<h2 style="color:#8bd3ff;margin-bottom:8px;">Gift Preview</h2>
+
+<div id="playerArea" class="player"></div>
+
+<div id="messages"></div>
+
+<button class="btn" style="margin-top:12px;" onclick="replay()">Replay Sequence</button>
+
+</div>
+
+<script>
+const messages = ["Her Light", "Her Strength", "Her Mystery", "Final Message"];
+let currentTimers = [];
+
+/* ---------- GENERATE GIFT LINK ---------- */
+function parseYT(input){
+  let r = /(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{6,11})/;
+  let m = input.match(r);
+  if(m) return m[1];
+  if(/^[A-Za-z0-9_-]{6,11}$/.test(input)) return input;
+  return null;
+}
+
+function generateGift(){
+  const media = document.getElementById("mediaInput").value.trim();
+  const wa = document.getElementById("waInput").value.trim();
+  if(!media){ alert("Enter a YouTube link or mp3 URL"); return; }
+
+  let base = window.location.origin + window.location.pathname;
+  let yt = parseYT(media);
+  let link = "";
+
+  if(yt){
+    link = `${base}?yt=${yt}#finale`;
+  } else {
+    if(!media.startsWith("http")){
+      alert("Invalid mp3 URL");
+      return;
+    }
+    link = `${base}?mp3=${encodeURIComponent(media)}#finale`;
+  }
+
+  // Append WhatsApp number
+  if(wa){
+    link += `&wa=${wa}`;
+  }
+
+  document.getElementById("giftLink").value = link;
+  document.getElementById("output").style.display = "block";
+
+  try{ navigator.clipboard.writeText(link); }catch(e){}
+}
+
+function copyLink(){
+  navigator.clipboard.writeText(document.getElementById("giftLink").value);
+  alert("Copied!");
+}
+
+function openGift(){
+  window.open(document.getElementById("giftLink").value, "_blank");
+}
+
+function shareWhatsApp(){
+  const link = document.getElementById("giftLink").value;
+  const wa = document.getElementById("waInput").value.trim();
+  let url = "";
+
+  if(wa){
+    url = `https://wa.me/${wa}?text=${encodeURIComponent(link)}`;
+  } else {
+    url = `https://wa.me/?text=${encodeURIComponent(link)}`;
+  }
+
+  window.open(url, "_blank");
+}
+
+function nativeShare(){
+  const link = document.getElementById("giftLink").value;
+  if(navigator.share){
+    navigator.share({
+      title:"Constellation Gift",
+      text:"A message for you",
+      url:link
+    });
+  } else {
+    alert("Sharing not supported on this device.");
+  }
+}
+
+/* ---------- AUTO PLAYER FROM URL ---------- */
+window.onload = function(){
+  const url = new URL(window.location.href);
+  const yt = url.searchParams.get("yt");
+  const mp3 = url.searchParams.get("mp3");
+  const hash = url.hash.replace("#", "");
+
+  if(yt || mp3){
+    loadPlayer(yt, mp3);
+  }
+  if(hash === "finale"){
+    setTimeout(startSequence, 500);
+  }
+};
+
+function loadPlayer(yt, mp3){
+  const area = document.getElementById("playerArea");
+  if(yt){
+    area.innerHTML = `
+      <iframe src="https://www.youtube.com/embed/${yt}?autoplay=1&playsinline=1"
+      allow="autoplay" height="320"></iframe>`;
+  } else if(mp3){
+    area.innerHTML = `
+      <audio controls autoplay src="${mp3}" style="margin-top:10px;"></audio>`;
+  }
+}
+
+/* ---------- MESSAGE SEQUENCE ---------- */
+function startSequence(){
+  clearTimers();
+  const box = document.getElementById("messages");
+  box.innerHTML = "";
+
+  messages.forEach((msg, i)=>{
+    const div = document.createElement("div");
+    div.className = "message";
+    div.innerHTML = `<h3>${msg}</h3>`;
+    box.appendChild(div);
+
+    let t = setTimeout(()=>{div.classList.add("visible")}, i * 2000);
+    currentTimers.push(t);
+  });
+}
+
+function replay(){
+  startSequence();
+}
+
+function clearTimers(){
+  currentTimers.forEach(t=>clearTimeout(t));
+  currentTimers = [];
+}
+</script>
+</body>
+  </html>
