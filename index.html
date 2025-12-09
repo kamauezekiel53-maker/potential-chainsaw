@@ -1,258 +1,590 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>Constellation Gift — Single File</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Friendship Gift — Rose Edition 🌸</title>
+<meta name="description" content="Single-file Friendship Gift generator — romantic / rose-gold UI. Generates shareable gift links (YouTube or mp3) with a short message sequence and WhatsApp sharing." />
 <style>
-body{
-  margin:0;
-  padding:0;
-  background:#050c19;
-  font-family:Arial, sans-serif;
-  color:#eaf6ff;
-}
-.container{
-  max-width:600px;
-  margin:25px auto;
-  padding:18px;
-  background:#0d1629;
-  border-radius:12px;
-  box-shadow:0 8px 30px rgba(0,0,0,.6);
-}
-h1{color:#8bd3ff;font-size:22px;margin:0 0 14px}
-.input{
-  width:100%;
-  padding:10px;
-  margin-top:8px;
-  border-radius:8px;
-  border:1px solid #20304a;
-  background:#0a1322;
-  color:#eaf6ff;
-}
-.btn{
-  background:#8bd3ff;
-  color:#08212e;
-  padding:10px 14px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-}
-.btn.ghost{
-  background:#0a1322;
-  border:1px solid #20304a;
-  color:#cbe7ff;
-}
-.section{
-  background:#0a1322;
-  padding:14px;
-  border-radius:8px;
-  margin-top:16px;
-}
-.message{
-  opacity:0;
-  transform:translateY(10px);
-  transition:all 0.5s;
-  background:#0b1424;
-  border:1px solid #1c2b43;
-  padding:10px;
-  border-radius:8px;
-  margin-top:10px;
-}
-.message.visible{
-  opacity:1;
-  transform:translateY(0);
-}
-.player{
-  margin-top:12px;
-}
-iframe, audio{
-  width:100%;
-  border-radius:8px;
-  border:1px solid #20304a;
-}
-.shareRow{
-  margin-top:12px;
-  display:flex;
-  gap:10px;
-}
+  /* =========================
+     Rose / Romantic (Option B)
+     Single-file app styles
+     ========================= */
+
+  :root{
+    --bg:#0b0810;
+    --panel:#1a0f18;
+    --glass: rgba(255,255,255,0.03);
+    --muted: #d8cdd7;
+    --accent1: #ff8fb3; /* soft pink */
+    --accent2: #f6d4b8; /* rose-gold highlight */
+    --accent3: #9b5f8a; /* deep mauve */
+    --heart: #ff6b9a;
+    --card-glow: rgba(255,140,160,0.08);
+    --radius: 14px;
+    --shadow: 0 10px 30px rgba(0,0,0,0.6);
+    --glass-border: rgba(255,255,255,0.04);
+  }
+
+  *{box-sizing:border-box;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:var(--muted);}
+  html,body{height:100%;margin:0;background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(255,140,160,0.06), transparent 8%),
+    radial-gradient(800px 400px at 90% 90%, rgba(155,95,138,0.03), transparent 6%),
+    var(--bg);
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+  /* container */
+  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;gap:20px;flex-wrap:wrap;position:relative;z-index:1;}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0.01));border:1px solid var(--glass-border);backdrop-filter: blur(6px) saturate(120%);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);max-width:520px;width:100%;}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(155,95,138,0.12);font-weight:700;color:#fff;font-size:20px;}
+  h1{margin:0;font-size:20px;color:var(--accent2);letter-spacing:0.2px}
+  p.lead{margin:6px 0 10px;color:#f0e7ee;font-size:13px}
+
+  /* inputs */
+  .field{margin-top:10px}
+  label{display:block;font-size:13px;margin-bottom:8px;color:#f6e9ef;font-weight:600}
+  input[type="text"], input[type="url"], input[type="tel"], textarea{
+    width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);outline:none;
+  }
+  textarea{min-height:96px;resize:vertical}
+
+  .row{display:flex;gap:10px}
+  .col{flex:1}
+
+  .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  button.btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+  .primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;box-shadow:0 6px 18px rgba(255,140,160,0.08)}
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+  .copy{background:linear-gradient(90deg,#ffd6c8,#ffddea);color:#371a15}
+
+  /* output/link */
+  #output{margin-top:12px;font-size:13px;color:#f3e9ef;word-break:break-word}
+  #output a{color:var(--accent2);text-decoration:none;display:inline-block;margin-top:6px}
+
+  /* preview card */
+  .preview{margin-top:18px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.008), rgba(255,255,255,0.006));border:1px solid rgba(255,255,255,0.02)}
+  .video{width:100%;height:300px;border-radius:10px;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+  .video iframe, .video audio{width:100%;height:100%;border:0;display:block}
+  .letter{margin-top:12px;white-space:pre-wrap;color:#efdfe8;background:linear-gradient(180deg, rgba(255,240,245,0.02), transparent);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+  .signature{margin-top:10px;font-weight:800;color:var(--accent1);text-align:right}
+
+  /* message tiles */
+  .messages{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .tile{flex:1;min-width:120px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.006));border:1px solid rgba(255,255,255,0.02);opacity:0;transform:translateY(12px);transition:all 480ms cubic-bezier(.2,.9,.2,1)}
+  .tile.show{opacity:1;transform:none;box-shadow:0 10px 30px rgba(0,0,0,0.45)}
+  .tile h3{margin:0;color:var(--accent3);font-size:15px}
+  .tile p{margin:8px 0 0;color:#f3e6ec;font-size:12px}
+
+  /* small controls */
+  .controls{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .small{font-size:12px;color:#d9cdd6}
+
+  /* hearts animation */
+  .hearts{position:fixed;right:18px;bottom:18px;z-index:5;pointer-events:none}
+  .heart{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--heart),#ff9fb9);display:flex;align-items:center;justify-content:center;color:white;box-shadow:0 8px 20px rgba(255,110,150,0.08);opacity:0;transform:translateY(20px) scale(0.95);transition:all 700ms cubic-bezier(.2,.9,.2,1)}
+
+  /* responsive */
+  @media (min-width:1100px){ .wrap{max-width:1120px;gap:28px} .card{max-width:520px} }
+  @media (max-width:760px){ .video{height:220px} .card{padding:16px} header{gap:10px} .logo{width:48px;height:48px;font-size:18px} }
+
+  /* subtle focus */
+  input:focus, textarea:focus, button:focus {outline:2px solid rgba(255,140,160,0.12);outline-offset:2px}
 </style>
 </head>
 <body>
-<div class="container">
+  <div class="wrap">
+    <!-- Creator Card -->
+    <div class="card" id="creatorCard" aria-live="polite">
+      <header>
+        <div class="logo">♡</div>
+        <div>
+          <h1>Friendship Gift — Rose Edition</h1>
+          <p class="lead">Create a delicate gift link with music and a short message sequence. Works with YouTube video or direct mp3 link.</p>
+        </div>
+      </header>
 
-<h1>Constellation Gift — Builder</h1>
+      <div class="field">
+        <label for="fromName">Your name</label>
+        <input id="fromName" type="text" placeholder="e.g. Ebenezer" autocomplete="name">
+      </div>
 
-<div class="section">
-  <p>YouTube link / mp3 link:</p>
-  <input id="mediaInput" class="input" placeholder="Paste YouTube link or mp3 URL">
+      <div class="field">
+        <label for="toName">Friend's name</label>
+        <input id="toName" type="text" placeholder="e.g. Grace" autocomplete="name">
+      </div>
 
-  <p style="margin-top:12px;">Recipient WhatsApp Number:</p>
-  <input id="waInput" class="input" placeholder="e.g. 254712345678">
+      <div class="field">
+        <label for="media">YouTube link or mp3 URL</label>
+        <input id="media" type="url" placeholder="YouTube URL or https://.../song.mp3">
+      </div>
 
-  <button class="btn" style="margin-top:12px" onclick="generateGift()">Generate Gift Link</button>
-</div>
+      <div class="row" style="margin-top:8px">
+        <div class="col field">
+          <label for="waNumber">Friend's WhatsApp (optional)</label>
+          <input id="waNumber" type="tel" placeholder="e.g. 254712345678">
+        </div>
+        <div style="width:120px" class="col field">
+          <label for="autoplay">Autoplay?</label>
+          <select id="autoplay" style="width:100%;padding:10px;border-radius:10px;background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.03)">
+            <option value="0">No</option>
+            <option value="1">Yes (muted for autoplay)</option>
+          </select>
+        </div>
+      </div>
 
-<div id="output" class="section" style="display:none;">
-  <p>Gift link:</p>
-  <input id="giftLink" class="input" readonly>
+      <div class="actions">
+        <button class="btn primary" id="generateBtn">✨ Generate Gift Link</button>
+        <button class="btn ghost" id="previewBtn">👁 Preview</button>
+        <button class="btn copy" id="copyBtn">📋 Copy Link</button>
+      </div>
 
-  <div class="shareRow">
-    <button class="btn" onclick="copyLink()">Copy</button>
-    <button class="btn ghost" onclick="openGift()">Open</button>
+      <div id="output" aria-atomic="true"></div>
+
+      <div class="small" style="margin-top:10px">
+        Tip: For YouTube, paste the full video URL or the 11-character ID. For mp3s, the file must be publicly accessible.
+      </div>
+    </div>
+
+    <!-- Preview / Receiver Card -->
+    <div class="card" id="previewCard" style="display:none;">
+      <header style="align-items:flex-start">
+        <div style="flex:1">
+          <h1 id="previewTitle">A Gift for <span id="previewTo">Friend</span></h1>
+          <p class="lead small" id="previewFrom">From: <strong id="previewFromName">You</strong></p>
+        </div>
+        <div style="width:56px;text-align:right">
+          <div class="logo" style="background:linear-gradient(135deg,var(--accent2),var(--accent1));font-size:16px">❤</div>
+        </div>
+      </header>
+
+      <div class="preview">
+        <div class="video" id="playerHolder" aria-label="Media player area">
+          <!-- iframe or audio inserted here -->
+          <div id="noMedia" style="color:#cbb9c6;">No media provided — open the generator to add a YouTube link or mp3.</div>
+        </div>
+
+        <div class="letter" id="letterArea" aria-live="polite">
+          <!-- letter content -->
+          <div id="greetingText" style="font-weight:700;font-size:15px;color:var(--accent3)">Hey Friend,</div>
+          <div id="bodyText" style="margin-top:8px;color:#f3e6ec">
+            A small message...
+          </div>
+          <div class="signature" id="signatureText">— You</div>
+        </div>
+
+        <div class="messages" id="messageTiles" aria-hidden="false">
+          <!-- message tiles -->
+        </div>
+
+        <div class="controls" style="margin-top:12px">
+          <button class="btn primary" id="playSequence">▶ Play Sequence</button>
+          <button class="btn ghost" id="replaySequence">↻ Replay</button>
+          <button class="btn copy" id="shareBtn">🔗 Share</button>
+        </div>
+
+        <a id="waReply" href="#" target="_blank" class="btn" style="display:none;margin-top:12px;background:#25D366;color:#042">💬 Reply on WhatsApp</a>
+      </div>
+
+    </div>
   </div>
 
-  <div class="shareRow">
-    <button class="btn" onclick="shareWhatsApp()">Share via WhatsApp</button>
-    <button class="btn ghost" onclick="nativeShare()">Share…</button>
+  <!-- decorative hearts -->
+  <div class="hearts" aria-hidden="true">
+    <div id="heart1" class="heart" style="margin-bottom:8px">❤</div>
   </div>
-</div>
-
-<hr style="margin:20px 0;border-color:#112233">
-
-<h2 style="color:#8bd3ff;margin-bottom:8px;">Gift Preview</h2>
-
-<div id="playerArea" class="player"></div>
-
-<div id="messages"></div>
-
-<button class="btn" style="margin-top:12px;" onclick="replay()">Replay Sequence</button>
-
-</div>
 
 <script>
-const messages = ["Her Light", "Her Strength", "Her Mystery", "Final Message"];
-let currentTimers = [];
+/* ========================
+   App: Single-file Rose UI
+   Features:
+   - generate ?from=&to=&yt=ID or &mp3=URL &wa=number &autoplay=1
+   - preview player (YouTube iframe or audio tag)
+   - message tiles sequence ('Her Light' etc.)
+   - copy link, native share, whatsapp share/reply
+   - reacts to incoming link with #finale to auto-play the sequence
+   ======================== */
 
-/* ---------- GENERATE GIFT LINK ---------- */
-function parseYT(input){
-  let r = /(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{6,11})/;
-  let m = input.match(r);
-  if(m) return m[1];
-  if(/^[A-Za-z0-9_-]{6,11}$/.test(input)) return input;
-  return null;
-}
+(function(){
+  // Elements
+  const fromName = document.getElementById('fromName');
+  const toName = document.getElementById('toName');
+  const media = document.getElementById('media');
+  const waNumber = document.getElementById('waNumber');
+  const autoplay = document.getElementById('autoplay');
+  const generateBtn = document.getElementById('generateBtn');
+  const previewBtn = document.getElementById('previewBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const output = document.getElementById('output');
 
-function generateGift(){
-  const media = document.getElementById("mediaInput").value.trim();
-  const wa = document.getElementById("waInput").value.trim();
-  if(!media){ alert("Enter a YouTube link or mp3 URL"); return; }
+  const previewCard = document.getElementById('previewCard');
+  const previewTitle = document.getElementById('previewTitle');
+  const previewTo = document.getElementById('previewTo');
+  const previewFromName = document.getElementById('previewFromName');
+  const playerHolder = document.getElementById('playerHolder');
+  const noMedia = document.getElementById('noMedia');
+  const greetingText = document.getElementById('greetingText');
+  const bodyText = document.getElementById('bodyText');
+  const signatureText = document.getElementById('signatureText');
+  const messageTiles = document.getElementById('messageTiles');
+  const playSequenceBtn = document.getElementById('playSequence');
+  const replaySequenceBtn = document.getElementById('replaySequence');
+  const shareBtn = document.getElementById('shareBtn');
+  const waReply = document.getElementById('waReply');
 
-  let base = window.location.origin + window.location.pathname;
-  let yt = parseYT(media);
-  let link = "";
+  // Messages used in sequence (from original constellation app)
+  const MESSAGES = ['Her Light', 'Her Strength', 'Her Mystery', 'Final Message'];
+  const FINAL_LINE = 'May the music stay with her.';
 
-  if(yt){
-    link = `${base}?yt=${yt}#finale`;
-  } else {
-    if(!media.startsWith("http")){
-      alert("Invalid mp3 URL");
+  let lastGeneratedLink = '';
+  let currentTimers = [];
+  let currentMediaType = ''; // 'yt' or 'mp3' or ''
+  let currentYTId = '';
+  let currentMP3 = '';
+  let currentAutoplay = false;
+
+  // Utility: parse YouTube ID robustly
+  function extractYouTubeId(input){
+    if(!input) return '';
+    input = input.trim();
+    // If looks like an ID
+    if(/^[A-Za-z0-9_-]{6,20}$/.test(input) && !input.includes('http')) {
+      return input.length >= 6 ? input : '';
+    }
+    try {
+      const url = new URL(input, location.origin);
+      const host = url.hostname;
+      if(host.includes('youtu.be')) {
+        return url.pathname.slice(1).split('/')[0];
+      }
+      if(host.includes('youtube') || host.includes('yewtu')) {
+        if(url.searchParams.get('v')) return url.searchParams.get('v');
+        // /embed/ID or /v/ID or /watch/ID segments
+        const parts = url.pathname.split('/');
+        for(let i = parts.length - 1; i >= 0; --i){
+          const seg = parts[i];
+          if(seg && /^[A-Za-z0-9_-]{6,20}$/.test(seg)) return seg;
+        }
+      }
+    } catch(e){
+      // maybe raw id
+      const trimmed = input.replace(/\s+/g,'');
+      if(/^[A-Za-z0-9_-]{6,20}$/.test(trimmed)) return trimmed;
+      return '';
+    }
+    return '';
+  }
+
+  // Build link
+  function buildLink(){
+    const from = (fromName.value || '').trim();
+    const to = (toName.value || '').trim();
+    const m = (media.value || '').trim();
+    const wa = (waNumber.value || '').trim();
+    const ap = autoplay.value === '1';
+
+    if(!from || !to){
+      output.innerText = 'Please provide both your name and your friend\'s name.';
+      return '';
+    }
+
+    const base = location.origin + location.pathname;
+    const params = new URLSearchParams();
+    params.set('from', encodeURIComponent(from));
+    params.set('to', encodeURIComponent(to));
+
+    const yt = extractYouTubeId(m);
+    if(yt){
+      params.set('yt', yt);
+    } else if(m){
+      // treat as mp3 link (validate)
+      try {
+        const u = new URL(m);
+        // simple extension check for audio-like file
+        if(/\.(mp3|m4a|wav|ogg|flac)$/i.test(u.pathname) || u.searchParams.has('stream')){
+          params.set('mp3', encodeURIComponent(m));
+        } else {
+          // still allow as mp3; user might host custom endpoints
+          params.set('mp3', encodeURIComponent(m));
+        }
+      } catch(e){
+        output.innerText = 'Invalid media URL. Use a proper YouTube URL/ID or a valid mp3 URL.';
+        return '';
+      }
+    }
+
+    if(wa) params.set('wa', encodeURIComponent(wa));
+    if(ap) params.set('autoplay', '1');
+
+    // use #finale hash to trigger sequence on open
+    const url = `${base}?${params.toString()}#finale`;
+    lastGeneratedLink = url;
+    output.innerHTML = '🔗 Link ready: <a href="' + url + '" target="_blank" rel="noreferrer">' + url + '</a>';
+    return url;
+  }
+
+  // Copy link
+  copyBtn.addEventListener('click', async function(){
+    if(!lastGeneratedLink){
+      const built = buildLink();
+      if(!built) return;
+    }
+    try {
+      await navigator.clipboard.writeText(lastGeneratedLink);
+      output.innerText = '✅ Link copied to clipboard!';
+    } catch(e){
+      output.innerText = 'Copy failed — select the link and copy manually.';
+    }
+  });
+
+  // Generate
+  generateBtn.addEventListener('click', function(){
+    const url = buildLink();
+    if(url){
+      // show preview automatically
+      populatePreviewFromUrl(url);
+      previewCard.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  // preview only
+  previewBtn.addEventListener('click', function(){
+    const built = buildLink();
+    if(!built) return;
+    populatePreviewFromUrl(built);
+    previewCard.style.display = 'block';
+  });
+
+  // share (native)
+  shareBtn.addEventListener('click', function(){
+    const link = lastGeneratedLink || buildLink();
+    if(!link) return;
+    if(navigator.share){
+      navigator.share({ title: 'A Gift for you', text: 'A small gift — open this link', url: link }).catch(()=>{});
+    } else {
+      // fallback: copy
+      navigator.clipboard?.writeText(link).then(()=>{ alert('Link copied to clipboard'); }).catch(()=>{ alert('Sharing not supported'); });
+    }
+  });
+
+  // Play / Replay sequence
+  playSequenceBtn.addEventListener('click', startSequence);
+  replaySequenceBtn.addEventListener('click', function(){ startSequence(true); });
+
+  // populate preview from parameters or built link
+  function populatePreviewFromUrl(url){
+    // Accept either an absolute url or parse from form values
+    const u = new URL(url);
+    const params = u.searchParams;
+    const from = decodeURIComponent(params.get('from') || fromName.value || 'Friend');
+    const to = decodeURIComponent(params.get('to') || toName.value || 'Friend');
+    const yt = params.get('yt') || '';
+    const mp3 = params.get('mp3') ? decodeURIComponent(params.get('mp3')) : '';
+    const wa = params.get('wa') ? decodeURIComponent(params.get('wa')) : '';
+    const ap = params.get('autoplay') === '1';
+
+    // Update preview text
+    previewTo.textContent = to || 'Friend';
+    previewFromName.textContent = from || 'You';
+    greetingText.textContent = `Hey ${to || 'Friend'} 🌸,`;
+    bodyText.textContent = `${from || 'Someone'} sent you this small gift — a melody and some words to remind you that you are cherished.`;
+    signatureText.textContent = `— ${from || 'You'}`;
+
+    // Player
+    playerHolder.innerHTML = '';
+    noMedia.style.display = 'none';
+    currentMediaType = '';
+    currentYTId = '';
+    currentMP3 = '';
+    currentAutoplay = ap;
+
+    if(yt){
+      currentMediaType = 'yt';
+      currentYTId = yt;
+      // build iframe with autoplay preference: if autoplay -> autoplay=1&mute=1 to increase chance of autoplay
+      const params = new URLSearchParams({ rel:'0', modestbranding:'1', playsinline:'1' });
+      if(ap) { params.set('autoplay','1'); params.set('mute','1'); }
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${encodeURIComponent(yt)}?${params.toString()}`;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.setAttribute('allowfullscreen','');
+      iframe.style.border = '0';
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      playerHolder.appendChild(iframe);
+    } else if(mp3){
+      currentMediaType = 'mp3';
+      currentMP3 = mp3;
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.src = mp3;
+      if(ap){
+        // try autoplay; many browsers block autoplay with sound — we'll mute initially if autoplay requested
+        audio.autoplay = true;
+        audio.muted = false;
+        // Some browsers require user gesture; catch play failure quietly in sequence
+      }
+      playerHolder.appendChild(audio);
+    } else {
+      // no media
+      noMedia.style.display = 'block';
+    }
+
+    // WhatsApp reply link
+    if(wa){
+      let normalized = wa.replace(/\s+/g,'').replace(/^\+/, '');
+      const text = `Hi ${from}, thanks for the gift!`;
+      waReply.href = `https://wa.me/${encodeURIComponent(normalized)}?text=${encodeURIComponent(text)}`;
+      waReply.style.display = 'inline-block';
+    } else {
+      waReply.style.display = 'none';
+    }
+
+    // Prepare message tiles
+    renderMessageTiles();
+
+    // If the current URL includes #finale, auto-start sequence after small delay
+    if(u.hash && u.hash.replace('#','') === 'finale'){
+      setTimeout(()=>startSequence(), 600);
+    }
+  }
+
+  // Render message tiles (initially hidden)
+  function renderMessageTiles(){
+    messageTiles.innerHTML = '';
+    MESSAGES.forEach((m, i)=>{
+      const tile = document.createElement('div');
+      tile.className = 'tile';
+      tile.innerHTML = `<h3>${m}</h3><p>${i === MESSAGES.length - 1 ? FINAL_LINE : ''}</p>`;
+      messageTiles.appendChild(tile);
+    });
+  }
+
+  // Sequence controller: show tiles in order and attempt media play
+  function startSequence(forceReplay){
+    // clear existing timers
+    currentTimers.forEach(t => clearTimeout(t));
+    currentTimers = [];
+    // hide all tiles
+    const tiles = Array.from(document.querySelectorAll('.tile'));
+    tiles.forEach(t => { t.classList.remove('show'); });
+
+    // attempt to play audio/yt
+    attemptPlayMedia();
+
+    // schedule tile reveals
+    tiles.forEach((tile, idx) => {
+      const t = setTimeout(()=> {
+        tile.classList.add('show');
+        // last tile -> maybe stop or show final note
+        if(idx === tiles.length - 1){
+          // unmute audio if it was muted for autoplay and browser allowed autoplay
+          unmuteIfNeeded();
+        }
+      }, 800 + idx * 2200);
+      currentTimers.push(t);
+    });
+  }
+
+  // Try to play media (audio iframe handling limited)
+  function attemptPlayMedia(){
+    try {
+      if(currentMediaType === 'mp3'){
+        const audio = playerHolder.querySelector('audio');
+        if(audio){
+          audio.play().catch(()=>{ /* autoplay blocked */ });
+        }
+      } else if(currentMediaType === 'yt'){
+        // YouTube iframe autoplay param set — but sometimes blocked. Nothing reliable to force play cross-origin.
+        // However, if we can postMessage to player API we would need to include enablejsapi=1 when creating iframe.
+        // Keep simple: rely on iframe autoplay param set during creation.
+      }
+    } catch(e){}
+  }
+
+  function unmuteIfNeeded(){
+    try {
+      if(currentMediaType === 'mp3'){
+        const audio = playerHolder.querySelector('audio');
+        if(audio && audio.muted){
+          audio.muted = false;
+          // try to play again
+          audio.play().catch(()=>{});
+        }
+      }
+      // For YouTube, if we had used mute for autoplay, nothing to change cross-origin unless enablejsapi used.
+    } catch(e){}
+  }
+
+  // On load: if current page has parameters show preview automatically
+  (function initFromLocation(){
+    const params = new URLSearchParams(location.search);
+    if(params.has('from')){
+      // build synthetic url from current location to feed populatePreviewFromUrl
+      const url = location.href;
+      previewCard.style.display = 'block';
+      // use full current url (it already contains search + hash)
+      populatePreviewFromUrl(url);
+    }
+  })();
+
+  // share button: open WhatsApp if wa provided else generic share
+  shareBtn.addEventListener('click', function(){
+    const link = lastGeneratedLink || buildLink();
+    if(!link) return;
+    // if wa present in link, open wa share with message
+    const params = new URLSearchParams((new URL(link)).search);
+    const wa = params.get('wa');
+    if(wa){
+      const msg = `A gift for you: ${link}`;
+      window.open(`https://wa.me/${encodeURIComponent(wa)}?text=${encodeURIComponent(msg)}`, '_blank');
       return;
     }
-    link = `${base}?mp3=${encodeURIComponent(media)}#finale`;
-  }
-
-  // Append WhatsApp number
-  if(wa){
-    link += `&wa=${wa}`;
-  }
-
-  document.getElementById("giftLink").value = link;
-  document.getElementById("output").style.display = "block";
-
-  try{ navigator.clipboard.writeText(link); }catch(e){}
-}
-
-function copyLink(){
-  navigator.clipboard.writeText(document.getElementById("giftLink").value);
-  alert("Copied!");
-}
-
-function openGift(){
-  window.open(document.getElementById("giftLink").value, "_blank");
-}
-
-function shareWhatsApp(){
-  const link = document.getElementById("giftLink").value;
-  const wa = document.getElementById("waInput").value.trim();
-  let url = "";
-
-  if(wa){
-    url = `https://wa.me/${wa}?text=${encodeURIComponent(link)}`;
-  } else {
-    url = `https://wa.me/?text=${encodeURIComponent(link)}`;
-  }
-
-  window.open(url, "_blank");
-}
-
-function nativeShare(){
-  const link = document.getElementById("giftLink").value;
-  if(navigator.share){
-    navigator.share({
-      title:"Constellation Gift",
-      text:"A message for you",
-      url:link
-    });
-  } else {
-    alert("Sharing not supported on this device.");
-  }
-}
-
-/* ---------- AUTO PLAYER FROM URL ---------- */
-window.onload = function(){
-  const url = new URL(window.location.href);
-  const yt = url.searchParams.get("yt");
-  const mp3 = url.searchParams.get("mp3");
-  const hash = url.hash.replace("#", "");
-
-  if(yt || mp3){
-    loadPlayer(yt, mp3);
-  }
-  if(hash === "finale"){
-    setTimeout(startSequence, 500);
-  }
-};
-
-function loadPlayer(yt, mp3){
-  const area = document.getElementById("playerArea");
-  if(yt){
-    area.innerHTML = `
-      <iframe src="https://www.youtube.com/embed/${yt}?autoplay=1&playsinline=1"
-      allow="autoplay" height="320"></iframe>`;
-  } else if(mp3){
-    area.innerHTML = `
-      <audio controls autoplay src="${mp3}" style="margin-top:10px;"></audio>`;
-  }
-}
-
-/* ---------- MESSAGE SEQUENCE ---------- */
-function startSequence(){
-  clearTimers();
-  const box = document.getElementById("messages");
-  box.innerHTML = "";
-
-  messages.forEach((msg, i)=>{
-    const div = document.createElement("div");
-    div.className = "message";
-    div.innerHTML = `<h3>${msg}</h3>`;
-    box.appendChild(div);
-
-    let t = setTimeout(()=>{div.classList.add("visible")}, i * 2000);
-    currentTimers.push(t);
+    // else attempt navigator.share
+    if(navigator.share){
+      navigator.share({ title:`A gift for ${decodeURIComponent(params.get('to')||'friend')}`, text:`Open this link`, url:link }).catch(()=>{});
+    } else {
+      navigator.clipboard?.writeText(link).then(()=>{ alert('Link copied to clipboard'); }).catch(()=>{ alert('Copy failed'); });
+    }
   });
-}
 
-function replay(){
-  startSequence();
-}
+  // Small heart anim (appearance on generate)
+  function animateHeart(){
+    const heart = document.getElementById('heart1');
+    if(!heart) return;
+    heart.style.opacity = '1';
+    heart.style.transform = 'translateY(0) scale(1)';
+    setTimeout(()=>{ heart.style.opacity = '0'; heart.style.transform = 'translateY(-20px) scale(0.9)'; }, 1000);
+  }
 
-function clearTimers(){
-  currentTimers.forEach(t=>clearTimeout(t));
-  currentTimers = [];
-}
+  // When generate success, show heart + set lastGeneratedLink
+  const origBuildLink = buildLink;
+  buildLink = function(){
+    const res = origBuildLink();
+    if(res){
+      animateHeart();
+    }
+    return res;
+  };
+
+  // Accessibility: keyboard enter to generate on fields
+  [fromName, toName, media, waNumber].forEach(el=>{
+    el.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        generateBtn.click();
+      }
+    });
+  });
+
+  // Expose small debug on window for convenience (owner)
+  window._friendshipGift = {
+    buildLink,
+    startSequence
+  };
+
+})();
 </script>
 </body>
-  </html>
+</html>
