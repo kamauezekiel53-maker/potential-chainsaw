@@ -3,235 +3,93 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Rose Gift System</title>
-<meta name="description" content="Sender & Receiver pages for rose gift" />
+<title>Rose Gift Flipbook</title>
 <style>
-  :root{
-    --bg:#07060a; --card:#0f1420; --muted:#eadfe6;
-    --accent1:#ff8fb3; --accent2:#f6d4b8; --accent3:#9b5f8a;
-    --glass: rgba(255,255,255,0.02); --glass-border: rgba(255,255,255,0.04);
-    --radius:12px;
-  }
-  *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:var(--muted);}
-  html,body{height:100%;margin:0;background:
-    radial-gradient(1200px 600px at 10% 10%, rgba(255,140,160,0.06), transparent 8%),
-    radial-gradient(800px 400px at 90% 90%, rgba(155,95,138,0.03), transparent 6%),
-    var(--bg); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
-  a{color:var(--accent2)}
-  .container{max-width:600px;margin:60px auto;padding:24px;}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0.01));border:1px solid var(--glass-border);backdrop-filter: blur(6px) saturate(120%);border-radius:var(--radius);padding:28px 32px;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
-  h1{margin:0 0 24px 0;font-size:26px;color:var(--accent2);text-align:center;}
-  label{display:block;margin-top:18px;font-size:14px;color:#f6e9ef}
-  input[type=text], input[type=url], input[type=tel], select, textarea{
-    width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:rgba(0,0,0,0.2);color:var(--muted);margin-top:8px;
-    transition:all 0.2s;
-  }
-  input:focus, select:focus, textarea:focus{
-    outline:none;border-color:var(--accent1);box-shadow:0 0 0 2px rgba(255,143,179,0.1);
-  }
-  textarea{min-height:100px;resize:vertical;}
-  .btn-group{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;}
-  .btn{padding:14px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;transition:all 0.2s;}
-  .btn:hover{transform:translateY(-2px);}
-  .primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;}
-  .copy{background:linear-gradient(90deg,#ffd6c8,#ffddea);color:#371a15;}
-  #output{margin-top:20px;padding:16px;border-radius:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.05);}
-  .small{font-size:13px;color:#e5d8de;margin-top:8px;line-height:1.5;}
-  .success{color:#a8ffb3;}
-  .error{color:#ff8f8f;}
-  /* Receiver page */
-  .receiver-container{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
-  .video-half{height:50vh;width:100%;background:#000;display:flex;align-items:center;justify-content:center;}
-  .message-half{height:50vh;width:100%;overflow:auto;padding:24px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border-top:1px solid rgba(255,255,255,0.04);}
-  .msg-content{font-size:18px;line-height:1.6;margin-bottom:16px;}
-  .nav-btn{padding:12px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;margin-top:12px;}
-  @media(max-width:640px){
-    .container{margin:20px auto;padding:16px;}
-    .card{padding:20px;}
-    h1{font-size:22px;}
-    .btn-group{flex-direction:column;}
-    .btn{width:100%;}
-  }
+:root{
+  --bg:#07060a; --muted:#eadfe6; --accent1:#ff8fb3; --accent2:#f6d4b8; --radius:12px;
+}
+body,html{margin:0;padding:0;height:100%;background:var(--bg);color:var(--muted);font-family:Inter,system-ui,sans-serif;}
+a{color:var(--accent2);}
+.receiver-container{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+.video-half{height:50vh;width:100%;background:#000;display:flex;align-items:center;justify-content:center;}
+.flipbook-container{height:50vh;width:100%;perspective:1000px;position:relative;overflow:hidden;}
+.page{position:absolute;width:100%;height:100%;background:rgba(0,0,0,0.2);backdrop-filter:blur(4px);border-radius:12px;padding:24px;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1.6;transform-origin:left;transform-style:preserve-3d;transition:transform 0.6s;}
+.page.flipped{transform:rotateY(-180deg);}
+.nav-btn{padding:12px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;margin:12px auto 0 auto;display:block;}
+.footer{position:absolute;bottom:12px;width:100%;text-align:center;font-size:14px;color:#e5d8de;}
 </style>
 </head>
 <body>
 
-<!-- ================= SENDER PAGE ================= -->
-<div id="senderPage" class="container card">
-  <h1>Create a Rose Gift</h1>
-  
-  <label>Your name</label>
-  <input id="from" type="text" placeholder="e.g. Ezekiel">
-  
-  <label>Friend's name</label>
-  <input id="to" type="text" placeholder="e.g. Grace">
-  
-  <label>WhatsApp number (optional)</label>
-  <input id="wa" type="tel" placeholder="e.g. 254712345678">
-  
-  <label>Video ID or MP3 URL</label>
-  <input id="media" type="text" placeholder="YouTube ID or https://.../song.mp3">
-  
-  <label>Autoplay music?</label>
-  <select id="autoplay">
-    <option value="0">No</option>
-    <option value="1">Yes (muted for autoplay)</option>
-  </select>
-  
-  <label>Message (separate pages by `---`)</label>
-  <textarea id="message" placeholder="Write message page by page, use `---` to separate pages"></textarea>
-  
-  <div class="btn-group">
-    <button class="btn primary" id="genBtn">Generate Gift Link</button>
-    <button class="btn copy" id="copyBtn">Copy Link</button>
-  </div>
-  
-  <div id="output" class="small">Your link will appear here after generation.</div>
-</div>
-
-<!-- ================= RECEIVER PAGE ================= -->
-<div id="receiverPage" style="display:none;" class="receiver-container">
+<div id="receiverPage" class="receiver-container">
   <div class="video-half" id="videoContainer"></div>
-  <div class="message-half">
-    <div class="msg-content" id="msgContent"></div>
-    <button class="nav-btn" id="nextPageBtn">Next Page</button>
-  </div>
+  <div class="flipbook-container" id="flipbook"></div>
+  <button class="nav-btn" id="nextPageBtn">Next Page</button>
+  <div class="footer">Made with ❤️ by Ezekiel</div>
 </div>
 
 <script>
 (function(){
-  const senderPage = document.getElementById('senderPage');
-  const receiverPage = document.getElementById('receiverPage');
-  
-  const genBtn = document.getElementById('genBtn');
-  const copyBtn = document.getElementById('copyBtn');
-  const output = document.getElementById('output');
-  const fromInput = document.getElementById('from');
-  const toInput = document.getElementById('to');
-  const waInput = document.getElementById('wa');
-  const mediaInput = document.getElementById('media');
-  const autoplayInput = document.getElementById('autoplay');
-  const messageInput = document.getElementById('message');
-  
-  let lastLink = '';
-  
-  function encodeVal(s){ return encodeURIComponent((s||'').trim()); }
-  
-  function extractYouTubeId(input){
-    if(!input) return '';
-    input = input.trim();
-    if(/^[A-Za-z0-9_-]{6,20}$/.test(input) && !input.includes('http')) return input;
-    try {
-      const u = new URL(input, location.origin);
-      if(u.hostname.includes('youtu.be')) return u.pathname.slice(1).split('/')[0];
-      if(u.hostname.includes('youtube') || u.hostname.includes('yewtu')) {
-        if(u.searchParams.get('v')) return u.searchParams.get('v');
-        const parts = u.pathname.split('/');
-        for(let i=parts.length-1;i>=0;--i){
-          const seg=parts[i];
-          if(/^[A-Za-z0-9_-]{6,20}$/.test(seg)) return seg;
-        }
-      }
-    } catch(e){
-      const match = input.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=))([A-Za-z0-9_-]{6,20})/);
-      if(match) return match[1];
-    }
-    return '';
-  }
-  
-  function buildGiftLink(){
-    const from = (fromInput.value||'').trim();
-    const to = (toInput.value||'').trim();
-    const wa = (waInput.value||'').trim();
-    const med = (mediaInput.value||'').trim();
-    const ap = autoplayInput.value === '1';
-    const msg = (messageInput.value||'').trim();
-    
-    if(!from || !to || !msg){
-      output.innerHTML = '<span class="error">❌ Please enter names and message.</span>';
-      return '';
-    }
-    
-    const base = window.location.origin + window.location.pathname;
-    const params = new URLSearchParams();
-    params.set('from', encodeVal(from));
-    params.set('to', encodeVal(to));
-    params.set('msg', btoa(msg)); // base64 to hide
-    const yt = extractYouTubeId(med);
-    if(yt){ params.set('yt', yt); } else if(med){ params.set('mp3', encodeVal(med)); }
-    if(wa) params.set('num', encodeVal(wa));
-    if(ap) params.set('autoplay','1');
-    
-    const url = `${base}?${params.toString()}#receiver`;
-    lastLink = url;
-    
-    output.innerHTML = `
-      <span class="success">✅ Gift link generated!</span><br><br>
-      <strong>Link:</strong><br>
-      <a href="${url}" target="_blank" style="word-break:break-all;">${url}</a>
-    `;
-    
-    return url;
-  }
-  
-  genBtn.addEventListener('click', ()=>buildGiftLink());
-  copyBtn.addEventListener('click', async ()=>{
-    if(!lastLink) { const url=buildGiftLink(); if(!url) return; }
-    try{ await navigator.clipboard.writeText(lastLink); output.innerHTML='<span class="success">✅ Link copied!</span>'; }
-    catch(e){ alert('Copy manually: '+lastLink); }
-  });
-  
   // ================= RECEIVER LOGIC =================
-  function initReceiver(){
-    const query = new URLSearchParams(window.location.search);
-    const msgB64 = query.get('msg');
-    const yt = query.get('yt');
-    const mp3 = query.get('mp3');
-    const autoplay = query.get('autoplay') === '1';
-    
-    if(!msgB64){ senderPage.style.display='block'; return; } // fallback
-    
-    senderPage.style.display='none';
-    receiverPage.style.display='flex';
-    
-    // Decode pages
-    const pages = atob(msgB64).split('---').map(s=>s.trim()).filter(s=>s);
-    let currentPage = 0;
-    
-    const msgContent = document.getElementById('msgContent');
-    const nextBtn = document.getElementById('nextPageBtn');
-    
-    // Video container
-    const videoContainer = document.getElementById('videoContainer');
-    if(yt){
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=${autoplay?1:0}&mute=${autoplay?1:0}&controls=1`;
-      iframe.style.width='100%'; iframe.style.height='100%'; iframe.frameBorder='0';
-      iframe.allow='autoplay; encrypted-media; fullscreen';
-      videoContainer.appendChild(iframe);
-    } else if(mp3){
-      const audio = document.createElement('audio');
-      audio.src = mp3; audio.controls = true; audio.autoplay = autoplay;
-      audio.style.width='80%';
-      videoContainer.appendChild(audio);
-    } else {
-      videoContainer.innerHTML='<span style="color:#fff;">No media provided</span>';
-    }
-    
-    function showPage(i){
-      if(i>=pages.length){ msgContent.innerHTML='🎉 End of gift!'; nextBtn.style.display='none'; return; }
-      msgContent.innerHTML=pages[i];
-    }
-    
-    nextBtn.addEventListener('click', ()=>{
-      currentPage++;
-      showPage(currentPage);
-    });
-    
-    showPage(currentPage);
+  const pagesContent = [
+    "Dear Grace, from the moment I saw you, my heart knew no rest.",
+    "Every thought of you fills me with warmth and joy.",
+    "The world shines brighter when you are near, like a rose in the sun.",
+    "I treasure every smile, every glance, every memory we create.",
+    "Distance may separate us, but my heart always finds you.",
+    "Through laughter and tears, my love grows stronger each day.",
+    "You are my inspiration, my muse, my endless dream.",
+    "With you, even silence speaks volumes of love and understanding.",
+    "May this gift remind you of how deeply you are cherished.",
+    "Forever yours, in heart and spirit, with all my love.",
+    "Every heartbeat whispers your name, and every breath carries your memory.",
+    "When I close my eyes, I see your smile lighting up my world.",
+    "Your presence turns ordinary moments into extraordinary memories.",
+    "I fall in love with you more each day, in ways words cannot capture.",
+    "Your laughter is the melody that keeps my soul dancing.",
+    "The thought of you makes even the darkest days shine.",
+    "You are the poetry my heart has been longing to write.",
+    "Being with you feels like coming home, safe and cherished.",
+    "No distance, no time, can diminish the love I hold for you.",
+    "This gift is a small reflection of a love that will never fade."
+  ];
+
+  const flipbook = document.getElementById('flipbook');
+  let currentPage = 0;
+
+  // Create pages
+  pagesContent.forEach((content, i)=>{
+    const div = document.createElement('div');
+    div.className='page';
+    div.innerHTML=content;
+    div.style.zIndex=pagesContent.length-i;
+    flipbook.appendChild(div);
+  });
+
+  const pageElems = document.querySelectorAll('.page');
+  function showPage(i){
+    if(i>=pageElems.length) return;
+    pageElems[i].classList.add('flipped');
   }
-  
-  if(window.location.hash==='#receiver'){ initReceiver(); }
+  document.getElementById('nextPageBtn').addEventListener('click',()=>{
+    showPage(currentPage);
+    currentPage++;
+    if(currentPage>=pagesContent.length) document.getElementById('nextPageBtn').style.display='none';
+  });
+
+  // ================= VIDEO =================
+  const videoContainer = document.getElementById('videoContainer');
+  // CHANGE THIS TO YOUR VIDEO ID OR MP3 URL
+  const yt = "dQw4w9WgXcQ"; // Example YouTube ID
+  const autoplay = true;
+
+  if(yt){
+    const iframe = document.createElement('iframe');
+    iframe.src=`https://www.youtube.com/embed/${yt}?autoplay=${autoplay?1:0}&mute=${autoplay?1:0}&controls=1`;
+    iframe.style.width='100%'; iframe.style.height='100%'; iframe.frameBorder='0';
+    iframe.allow='autoplay; encrypted-media; fullscreen';
+    videoContainer.appendChild(iframe);
+  }
 })();
 </script>
 </body>
