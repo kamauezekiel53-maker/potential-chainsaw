@@ -1,308 +1,206 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Rose Gift</title>
-
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>She Is The Constellation</title>
 <style>
 :root{
-  --bg:#05050a;
-  --card:#0d0b14;
-  --text:#f5edf3;
-  --accent1:#ff8fb3;
-  --accent2:#f6d4b8;
-  --radius:16px;
+  --bg:#05060b;
+  --card:#0c101a;
+  --text:#f2eefc;
+  --muted:#aaa7b5;
+  --accent1:#ff9aa2;
 }
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,sans-serif;}
-html,body{height:100%;background:var(--bg);color:var(--text);}
-
-.hidden{display:none;}
-
-.container{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-}
+*{box-sizing:border-box;font-family:Poppins,system-ui;}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);}
 
 .card{
-  width:100%;
-  max-width:480px;
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:24px;
-  box-shadow:0 0 60px rgba(255,143,179,.12);
+  background:linear-gradient(180deg, #0c101a, #07090f);
+  border-radius:22px;
+  padding:20px;
+  margin-top:15px;
 }
 
-h1{text-align:center;margin-bottom:20px;}
+h1{text-align:center;font-size:28px;}
+.subtitle{text-align:center;color:#bfbad3;font-size:15px;margin-bottom:10px;}
+
+.btn{
+  border:none;padding:12px 20px;border-radius:30px;font-weight:700;
+  background:#1d2332;color:#fff;cursor:pointer;
+}
+
+.pink{background:#ffb5c2;color:#22010b;}
+.green{background:#24d366;color:#022;}
+.gray{background:#1c222f;color:#fff;}
+
+.videoBox{
+  width:100%;height:260px;background:#000;border-radius:20px;
+  overflow:hidden;position:relative;
+}
+#videoFrame{width:100%;height:100%;}
+
+.pauseBtn{
+  position:absolute;right:16px;bottom:16px;
+  background:#222a38;color:#fff;border-radius:30px;
+  border:none;padding:10px 16px;font-weight:700;
+}
+
+.pageCard{
+  background:#0b0f19;border-radius:22px;padding:24px;margin-top:15px;
+  min-height:260px;
+}
+.pageCard h2{font-size:22px;margin-bottom:15px;}
+.pageCard p{line-height:1.6;font-size:16px;white-space:pre-line;}
+
+.navRow{display:flex;justify-content:space-between;margin-top:15px;}
+
+.footer{text-align:center;color:#bfbad3;margin-top:20px;font-size:14px;}
+.footer span{color:#ff99aa;}
+.hidden{display:none;}
 
 input{
-  width:100%;
-  padding:14px;
-  border-radius:12px;
-  background:#050308;
-  color:white;
-  border:1px solid rgba(255,255,255,.05);
-  margin-bottom:14px;
-  font-size:16px;
+  width:100%;padding:12px;border-radius:12px;margin-top:6px;
+  background:#0c101a;border:1px solid #111;color:white;
 }
 
-button{
-  width:100%;
-  padding:14px;
-  margin-top:12px;
-  border:none;
-  border-radius:14px;
-  font-weight:700;
-  font-size:16px;
-  cursor:pointer;
-  background:linear-gradient(90deg,var(--accent1),var(--accent2));
-  color:#2b0b10;
-}
-
-.preview,.link-box{
-  margin-top:16px;
-  background:rgba(255,255,255,.03);
-  padding:14px;
-  border-radius:12px;
-  font-size:14px;
-  word-break:break-word;
-}
-
-.receiver{
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-}
-
-.video-half{height:50vh;background:#000;}
-.video-half iframe{width:100%;height:100%;}
-
-.flipbook{
-  height:50vh;
-  position:relative;
-  overflow:hidden;
-  padding:16px;
-}
-
-.page{
-  position:absolute;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,.9);
-  border-radius:16px;
-  padding:24px;
-  text-align:center;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  transform-origin:left;
-  transition:transform .6s ease;
-}
-.page.flipped{transform:rotateY(-180deg);}
-
-.title{font-size:22px;color:var(--accent2);margin-bottom:12px;}
-.text{font-size:18px;max-width:360px;line-height:1.8;}
-
-.controls{
-  position:absolute;
-  bottom:48px;
-  width:100%;
-  display:flex;
-  justify-content:space-between;
-  padding:0 20px;
-}
-
-.footer{
-  position:absolute;
-  bottom:12px;
-  width:100%;
-  text-align:center;
-  opacity:.8;
-  font-size:14px;
-}
-
-.whatsapp-btn{
-  background:#25D366;
-  color:white;
-  padding:12px 20px;
-  border-radius:10px;
-  text-decoration:none;
-  font-weight:700;
-}
-
-.restart-btn{
-  margin-top:12px;
-  background:#444;
-  color:white;
+@media(max-width:600px){
+  .videoBox{height:220px;}
 }
 </style>
 </head>
-
 <body>
 
-<!-- ================= SENDER VIEW ================= -->
-<div id="senderView" class="container">
-  <div class="card">
-    <h1>Create Your Gift</h1>
+<div id="senderView" class="card">
+  <h1>Create Your Gift</h1>
 
-    <input id="senderName" placeholder="Your Name" />
-    <input id="receiverName" placeholder="Her Name" />
-    <input id="videoId" placeholder="YouTube Video ID" />
-    <input id="whatsapp" placeholder="Your WhatsApp Number (e.g. 2547...)" />
+  <label>Your Name</label>
+  <input id="senderName">
 
-    <button onclick="generateLink()">Generate Gift Link</button>
+  <label>Her Name</label>
+  <input id="receiverName">
 
-    <div id="preview" class="preview">Preview appears here…</div>
-    <div id="linkBox" class="link-box hidden"></div>
-  </div>
+  <label>YouTube Link</label>
+  <input id="ytLink">
+
+  <label>Her WhatsApp Number</label>
+  <input id="waNumber" placeholder="2547xxxxxxx">
+
+  <button class="btn pink" onclick="generateLink()">Generate Gift Link</button>
+
+  <div id="giftLink" style="margin-top:15px;color:#bbb;"></div>
 </div>
 
-<!-- ================= RECEIVER VIEW ================= -->
-<div id="receiverView" class="receiver hidden">
+<div id="receiverView" class="hidden">
 
-  <div class="video-half" id="videoContainer"></div>
-
-  <div class="flipbook" id="flipbook"></div>
-
-  <div class="controls">
-    <button id="backBtn">Back</button>
-    <button id="nextBtn">Next</button>
+  <h1>She Is the Constellation</h1>
+  <div class="subtitle">
+    Every page is a facet of her — light, strength, mystery, and the hush between stars.
   </div>
 
-  <div class="footer" id="footerText"></div>
+  <div class="card videoBox">
+    <iframe id="videoFrame" allow="autoplay; encrypted-media"></iframe>
+    <button id="pauseBtn" class="pauseBtn">⏸ Pause</button>
+  </div>
+
+  <div class="pageCard">
+    <h2 id="pageTitle"></h2>
+    <p id="pageBody"></p>
+
+    <div class="navRow">
+      <button class="btn gray" onclick="prevPage()">Back</button>
+      <button class="btn pink" onclick="nextPage()">Next</button>
+    </div>
+
+    <div id="finalButtons" class="hidden" style="text-align:center;margin-top:20px;">
+      <a id="waBtn" class="btn green" target="_blank">Send reaction on WhatsApp</a>
+      <br><br>
+      <button class="btn gray" onclick="restartBook()">Restart</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    Made with love and stars • <span>Ezekiel</span>
+  </div>
+
 </div>
 
 <script>
-/* ================= ROUTER ================= */
-const qs = new URLSearchParams(window.location.search);
-const MODE = qs.has("from") ? "receiver" : "sender";
+const params = new URLSearchParams(location.search);
 
-if(MODE === "receiver"){
-  document.getElementById("senderView").classList.add("hidden");
-  document.getElementById("receiverView").classList.remove("hidden");
-  loadReceiver();
-}else{
-  document.getElementById("senderView").classList.remove("hidden");
-}
+const pages = [
+  {title:"Her Light", text:"She walks like dawn —\nsoft, certain,\nimpossible to ignore.\n\nEven the night\nstays a little longer\njust to see her rise."},
+  {title:"Her Strength", text:"She carries storms\ninside her heart\nand still blooms each morning\nlike the sky never broke her."},
+  {title:"Her Mystery", text:"There is a quiet magic\nin the way she exists —\nnot loud,\nnot weak,\njust endless and deep."},
+  {title:"Her Gravity", text:"She doesn't chase light.\nShe simply becomes it.\nAnd the universe\nleans toward her."},
+  {title:"Final Message", text:"This is not about us.\nIt is about you —\nthe way you turn ordinary moments\ninto constellations.\n\nI will always look up\nand find you there.\n\n— Created by Ezekiel"}
+];
 
-/* ================= SENDER LOGIC ================= */
+let pageIndex = 0;
+
 function generateLink(){
-  const sender = document.getElementById("senderName").value.trim() || "Someone";
-  const receiver = document.getElementById("receiverName").value.trim() || "Someone Special";
-  const video = document.getElementById("videoId").value.trim() || "dQw4w9WgXcQ";
-  const wa = document.getElementById("whatsapp").value.trim();
+  const f = senderName.value.trim();
+  const t = receiverName.value.trim();
+  const y = ytLink.value.trim();
+  const n = waNumber.value.trim();
 
-  const params = new URLSearchParams({
-    from: sender,
-    to: receiver,
-    vid: video,
-    wa: wa
-  });
+  if(!f||!t){ giftLink.innerText="Fill all names.";return; }
 
-  const link = `${location.origin}${location.pathname}?${params.toString()}`;
+  const link = location.origin+location.pathname+
+    `?from=${encodeURIComponent(f)}&to=${encodeURIComponent(t)}&yt=${encodeURIComponent(y)}&num=${encodeURIComponent(n)}`;
 
-  document.getElementById("preview").innerHTML = `
-    <strong>From:</strong> ${sender}<br>
-    <strong>To:</strong> ${receiver}<br>
-    <strong>Video:</strong> ${video}<br>
-    <strong>WhatsApp:</strong> ${wa}
-  `;
-
-  const linkBox = document.getElementById("linkBox");
-  linkBox.classList.remove("hidden");
-  linkBox.innerText = link;
+  giftLink.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
 }
 
-/* ================= RECEIVER LOGIC ================= */
+function extractYT(url){
+  if(!url) return "";
+  if(url.includes("youtu.be")) return url.split("/").pop();
+  if(url.includes("watch?v=")) return url.split("watch?v=")[1].split("&")[0];
+  return url;
+}
+
 function loadReceiver(){
-  const sender = qs.get("from") || "Someone";
-  const receiver = qs.get("to") || "Someone Special";
-  const YT_ID = qs.get("vid") || "dQw4w9WgXcQ";
-  const WA = qs.get("wa") || "";
+  const from = params.get("from");
+  if(!from) return;
 
-  // Inject video
-  const iframe = document.createElement("iframe");
-  iframe.src = `https://www.youtube.com/embed/${YT_ID}?autoplay=0&controls=1`;
-  iframe.allow = "autoplay; fullscreen";
-  iframe.frameBorder = "0";
-  document.getElementById("videoContainer").appendChild(iframe);
+  senderView.classList.add("hidden");
+  receiverView.classList.remove("hidden");
 
-  // Footer
-  document.getElementById("footerText").innerText = `Made with love and stars • ${sender}`;
-
-  const waLink = WA
-    ? `https://wa.me/${WA}?text=I%20just%20read%20your%20gift%20and%20it%20made%20me%20speechless%20%F0%9F%92%97`
-    : `https://wa.me/?text=I%20just%20read%20your%20gift%20and%20it%20made%20me%20speechless%20%F0%9F%92%97`;
-
-  const pages = [
-    ["Her Light","You walk into a room and everything feels brighter."],
-    ["Her Strength","Your strength inspires me in ways you may never realize."],
-    ["Her Smile","Your smile feels like peace settling in my heart."],
-    ["Her Laugh","Your laughter is my favorite melody."],
-    ["Her Heart","Your heart is the most beautiful place to be."],
-    ["Her Voice","Your voice stays with me long after the sound fades."],
-    ["Her Kindness","Your kindness changes the world around you."],
-    ["Her Soul","Your soul glows differently. Rare. Real. Powerful."],
-    ["Her Eyes","Your eyes hold a magic no words can describe."],
-    ["Her Presence","With you, even silence feels full."],
-    ["Her Dreams","I believe in your dreams like they are my own."],
-    ["Her World","Your world is art, and you are the masterpiece."],
-    ["Her Magic","You make ordinary moments unforgettable."],
-    ["Her Beauty","Not just your face — your spirit is breathtaking."],
-    ["Her Peace","You feel like calm in human form."],
-    ["Her Love","Loving you feels like breathing — natural and endless."],
-    ["Her Story","Every chapter of you is worth reading slowly."],
-    ["Her Name","Your name sounds like a soft prayer in my heart."],
-    ["Her Forever","If forever had a face, it would look like you."],
-    ["Final Page", `
-      Thank you for reading this gift 💗<br><br>
-      <a class="whatsapp-btn" href="${waLink}" target="_blank">Send reaction on WhatsApp</a>
-      <br>
-      <button class="restart-btn" onclick="location.href='${location.pathname}'">Restart</button>
-    `]
-  ];
-
-  const flipbook = document.getElementById("flipbook");
-
-  pages.forEach((p,i)=>{
-    const page = document.createElement("div");
-    page.className="page";
-    page.style.zIndex = pages.length-i;
-    page.innerHTML = `<div class="title">${p[0]}</div><div class="text">${p[1]}</div>`;
-    flipbook.appendChild(page);
-  });
-
-  const pageEls = document.querySelectorAll(".page");
-  let index = 0;
-
-  function updateBtns(){
-    document.getElementById("backBtn").style.display = index===0?"none":"inline-block";
-    document.getElementById("nextBtn").style.display = index>=pageEls.length?"none":"inline-block";
+  const yt = extractYT(params.get("yt")||"");
+  if(yt){
+    videoFrame.src=`https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&controls=0`;
   }
 
-  document.getElementById("nextBtn").onclick = ()=>{
-    if(index < pageEls.length){
-      pageEls[index].classList.add("flipped");
-      index++;
-      updateBtns();
-    }
-  };
-
-  document.getElementById("backBtn").onclick = ()=>{
-    if(index>0){
-      index--;
-      pageEls[index].classList.remove("flipped");
-      updateBtns();
-    }
-  };
-
-  updateBtns();
+  showPage();
 }
-</script>
 
+function showPage(){
+  pageTitle.innerText = pages[pageIndex].title;
+  pageBody.innerText = pages[pageIndex].text;
+
+  if(pageIndex === pages.length-1){
+    finalButtons.classList.remove("hidden");
+  } else {
+    finalButtons.classList.add("hidden");
+  }
+
+  const num = params.get("num");
+  if(num){
+    waBtn.href=`https://wa.me/${num}?text=${encodeURIComponent("I saw your gift 💖")}`;
+  }
+}
+
+function nextPage(){
+  if(pageIndex < pages.length-1){ pageIndex++; showPage(); }
+}
+function prevPage(){
+  if(pageIndex > 0){ pageIndex--; showPage(); }
+}
+function restartBook(){
+  pageIndex = 0; showPage();
+}
+
+loadReceiver();
+</script>
 </body>
 </html>
