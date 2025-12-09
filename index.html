@@ -1,96 +1,308 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Rose Gift Flipbook</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Rose Gift</title>
+
 <style>
 :root{
-  --bg:#07060a; --muted:#eadfe6; --accent1:#ff8fb3; --accent2:#f6d4b8; --radius:12px;
+  --bg:#05050a;
+  --card:#0d0b14;
+  --text:#f5edf3;
+  --accent1:#ff8fb3;
+  --accent2:#f6d4b8;
+  --radius:16px;
 }
-body,html{margin:0;padding:0;height:100%;background:var(--bg);color:var(--muted);font-family:Inter,system-ui,sans-serif;}
-a{color:var(--accent2);}
-.receiver-container{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
-.video-half{height:50vh;width:100%;background:#000;display:flex;align-items:center;justify-content:center;}
-.flipbook-container{height:50vh;width:100%;perspective:1000px;position:relative;overflow:hidden;}
-.page{position:absolute;width:100%;height:100%;background:rgba(0,0,0,0.2);backdrop-filter:blur(4px);border-radius:12px;padding:24px;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1.6;transform-origin:left;transform-style:preserve-3d;transition:transform 0.6s;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,system-ui,sans-serif;}
+html,body{height:100%;background:var(--bg);color:var(--text);}
+
+.hidden{display:none;}
+
+.container{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+.card{
+  width:100%;
+  max-width:480px;
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:24px;
+  box-shadow:0 0 60px rgba(255,143,179,.12);
+}
+
+h1{text-align:center;margin-bottom:20px;}
+
+input{
+  width:100%;
+  padding:14px;
+  border-radius:12px;
+  background:#050308;
+  color:white;
+  border:1px solid rgba(255,255,255,.05);
+  margin-bottom:14px;
+  font-size:16px;
+}
+
+button{
+  width:100%;
+  padding:14px;
+  margin-top:12px;
+  border:none;
+  border-radius:14px;
+  font-weight:700;
+  font-size:16px;
+  cursor:pointer;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  color:#2b0b10;
+}
+
+.preview,.link-box{
+  margin-top:16px;
+  background:rgba(255,255,255,.03);
+  padding:14px;
+  border-radius:12px;
+  font-size:14px;
+  word-break:break-word;
+}
+
+.receiver{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+}
+
+.video-half{height:50vh;background:#000;}
+.video-half iframe{width:100%;height:100%;}
+
+.flipbook{
+  height:50vh;
+  position:relative;
+  overflow:hidden;
+  padding:16px;
+}
+
+.page{
+  position:absolute;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,.9);
+  border-radius:16px;
+  padding:24px;
+  text-align:center;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  transform-origin:left;
+  transition:transform .6s ease;
+}
 .page.flipped{transform:rotateY(-180deg);}
-.nav-btn{padding:12px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;margin:12px auto 0 auto;display:block;}
-.footer{position:absolute;bottom:12px;width:100%;text-align:center;font-size:14px;color:#e5d8de;}
+
+.title{font-size:22px;color:var(--accent2);margin-bottom:12px;}
+.text{font-size:18px;max-width:360px;line-height:1.8;}
+
+.controls{
+  position:absolute;
+  bottom:48px;
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  padding:0 20px;
+}
+
+.footer{
+  position:absolute;
+  bottom:12px;
+  width:100%;
+  text-align:center;
+  opacity:.8;
+  font-size:14px;
+}
+
+.whatsapp-btn{
+  background:#25D366;
+  color:white;
+  padding:12px 20px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:700;
+}
+
+.restart-btn{
+  margin-top:12px;
+  background:#444;
+  color:white;
+}
 </style>
 </head>
+
 <body>
 
-<div id="receiverPage" class="receiver-container">
+<!-- ================= SENDER VIEW ================= -->
+<div id="senderView" class="container">
+  <div class="card">
+    <h1>Create Your Gift</h1>
+
+    <input id="senderName" placeholder="Your Name" />
+    <input id="receiverName" placeholder="Her Name" />
+    <input id="videoId" placeholder="YouTube Video ID" />
+    <input id="whatsapp" placeholder="Your WhatsApp Number (e.g. 2547...)" />
+
+    <button onclick="generateLink()">Generate Gift Link</button>
+
+    <div id="preview" class="preview">Preview appears here…</div>
+    <div id="linkBox" class="link-box hidden"></div>
+  </div>
+</div>
+
+<!-- ================= RECEIVER VIEW ================= -->
+<div id="receiverView" class="receiver hidden">
+
   <div class="video-half" id="videoContainer"></div>
-  <div class="flipbook-container" id="flipbook"></div>
-  <button class="nav-btn" id="nextPageBtn">Next Page</button>
-  <div class="footer">Made with ❤️ by Ezekiel</div>
+
+  <div class="flipbook" id="flipbook"></div>
+
+  <div class="controls">
+    <button id="backBtn">Back</button>
+    <button id="nextBtn">Next</button>
+  </div>
+
+  <div class="footer" id="footerText"></div>
 </div>
 
 <script>
-(function(){
-  // ================= RECEIVER LOGIC =================
-  const pagesContent = [
-    "Dear Grace, from the moment I saw you, my heart knew no rest.",
-    "Every thought of you fills me with warmth and joy.",
-    "The world shines brighter when you are near, like a rose in the sun.",
-    "I treasure every smile, every glance, every memory we create.",
-    "Distance may separate us, but my heart always finds you.",
-    "Through laughter and tears, my love grows stronger each day.",
-    "You are my inspiration, my muse, my endless dream.",
-    "With you, even silence speaks volumes of love and understanding.",
-    "May this gift remind you of how deeply you are cherished.",
-    "Forever yours, in heart and spirit, with all my love.",
-    "Every heartbeat whispers your name, and every breath carries your memory.",
-    "When I close my eyes, I see your smile lighting up my world.",
-    "Your presence turns ordinary moments into extraordinary memories.",
-    "I fall in love with you more each day, in ways words cannot capture.",
-    "Your laughter is the melody that keeps my soul dancing.",
-    "The thought of you makes even the darkest days shine.",
-    "You are the poetry my heart has been longing to write.",
-    "Being with you feels like coming home, safe and cherished.",
-    "No distance, no time, can diminish the love I hold for you.",
-    "This gift is a small reflection of a love that will never fade."
+/* ================= ROUTER ================= */
+const qs = new URLSearchParams(window.location.search);
+const MODE = qs.has("from") ? "receiver" : "sender";
+
+if(MODE === "receiver"){
+  document.getElementById("senderView").classList.add("hidden");
+  document.getElementById("receiverView").classList.remove("hidden");
+  loadReceiver();
+}else{
+  document.getElementById("senderView").classList.remove("hidden");
+}
+
+/* ================= SENDER LOGIC ================= */
+function generateLink(){
+  const sender = document.getElementById("senderName").value.trim() || "Someone";
+  const receiver = document.getElementById("receiverName").value.trim() || "Someone Special";
+  const video = document.getElementById("videoId").value.trim() || "dQw4w9WgXcQ";
+  const wa = document.getElementById("whatsapp").value.trim();
+
+  const params = new URLSearchParams({
+    from: sender,
+    to: receiver,
+    vid: video,
+    wa: wa
+  });
+
+  const link = `${location.origin}${location.pathname}?${params.toString()}`;
+
+  document.getElementById("preview").innerHTML = `
+    <strong>From:</strong> ${sender}<br>
+    <strong>To:</strong> ${receiver}<br>
+    <strong>Video:</strong> ${video}<br>
+    <strong>WhatsApp:</strong> ${wa}
+  `;
+
+  const linkBox = document.getElementById("linkBox");
+  linkBox.classList.remove("hidden");
+  linkBox.innerText = link;
+}
+
+/* ================= RECEIVER LOGIC ================= */
+function loadReceiver(){
+  const sender = qs.get("from") || "Someone";
+  const receiver = qs.get("to") || "Someone Special";
+  const YT_ID = qs.get("vid") || "dQw4w9WgXcQ";
+  const WA = qs.get("wa") || "";
+
+  // Inject video
+  const iframe = document.createElement("iframe");
+  iframe.src = `https://www.youtube.com/embed/${YT_ID}?autoplay=0&controls=1`;
+  iframe.allow = "autoplay; fullscreen";
+  iframe.frameBorder = "0";
+  document.getElementById("videoContainer").appendChild(iframe);
+
+  // Footer
+  document.getElementById("footerText").innerText = `Made with love and stars • ${sender}`;
+
+  const waLink = WA
+    ? `https://wa.me/${WA}?text=I%20just%20read%20your%20gift%20and%20it%20made%20me%20speechless%20%F0%9F%92%97`
+    : `https://wa.me/?text=I%20just%20read%20your%20gift%20and%20it%20made%20me%20speechless%20%F0%9F%92%97`;
+
+  const pages = [
+    ["Her Light","You walk into a room and everything feels brighter."],
+    ["Her Strength","Your strength inspires me in ways you may never realize."],
+    ["Her Smile","Your smile feels like peace settling in my heart."],
+    ["Her Laugh","Your laughter is my favorite melody."],
+    ["Her Heart","Your heart is the most beautiful place to be."],
+    ["Her Voice","Your voice stays with me long after the sound fades."],
+    ["Her Kindness","Your kindness changes the world around you."],
+    ["Her Soul","Your soul glows differently. Rare. Real. Powerful."],
+    ["Her Eyes","Your eyes hold a magic no words can describe."],
+    ["Her Presence","With you, even silence feels full."],
+    ["Her Dreams","I believe in your dreams like they are my own."],
+    ["Her World","Your world is art, and you are the masterpiece."],
+    ["Her Magic","You make ordinary moments unforgettable."],
+    ["Her Beauty","Not just your face — your spirit is breathtaking."],
+    ["Her Peace","You feel like calm in human form."],
+    ["Her Love","Loving you feels like breathing — natural and endless."],
+    ["Her Story","Every chapter of you is worth reading slowly."],
+    ["Her Name","Your name sounds like a soft prayer in my heart."],
+    ["Her Forever","If forever had a face, it would look like you."],
+    ["Final Page", `
+      Thank you for reading this gift 💗<br><br>
+      <a class="whatsapp-btn" href="${waLink}" target="_blank">Send reaction on WhatsApp</a>
+      <br>
+      <button class="restart-btn" onclick="location.href='${location.pathname}'">Restart</button>
+    `]
   ];
 
-  const flipbook = document.getElementById('flipbook');
-  let currentPage = 0;
+  const flipbook = document.getElementById("flipbook");
 
-  // Create pages
-  pagesContent.forEach((content, i)=>{
-    const div = document.createElement('div');
-    div.className='page';
-    div.innerHTML=content;
-    div.style.zIndex=pagesContent.length-i;
-    flipbook.appendChild(div);
+  pages.forEach((p,i)=>{
+    const page = document.createElement("div");
+    page.className="page";
+    page.style.zIndex = pages.length-i;
+    page.innerHTML = `<div class="title">${p[0]}</div><div class="text">${p[1]}</div>`;
+    flipbook.appendChild(page);
   });
 
-  const pageElems = document.querySelectorAll('.page');
-  function showPage(i){
-    if(i>=pageElems.length) return;
-    pageElems[i].classList.add('flipped');
-  }
-  document.getElementById('nextPageBtn').addEventListener('click',()=>{
-    showPage(currentPage);
-    currentPage++;
-    if(currentPage>=pagesContent.length) document.getElementById('nextPageBtn').style.display='none';
-  });
+  const pageEls = document.querySelectorAll(".page");
+  let index = 0;
 
-  // ================= VIDEO =================
-  const videoContainer = document.getElementById('videoContainer');
-  // CHANGE THIS TO YOUR VIDEO ID OR MP3 URL
-  const yt = "dQw4w9WgXcQ"; // Example YouTube ID
-  const autoplay = true;
-
-  if(yt){
-    const iframe = document.createElement('iframe');
-    iframe.src=`https://www.youtube.com/embed/${yt}?autoplay=${autoplay?1:0}&mute=${autoplay?1:0}&controls=1`;
-    iframe.style.width='100%'; iframe.style.height='100%'; iframe.frameBorder='0';
-    iframe.allow='autoplay; encrypted-media; fullscreen';
-    videoContainer.appendChild(iframe);
+  function updateBtns(){
+    document.getElementById("backBtn").style.display = index===0?"none":"inline-block";
+    document.getElementById("nextBtn").style.display = index>=pageEls.length?"none":"inline-block";
   }
-})();
+
+  document.getElementById("nextBtn").onclick = ()=>{
+    if(index < pageEls.length){
+      pageEls[index].classList.add("flipped");
+      index++;
+      updateBtns();
+    }
+  };
+
+  document.getElementById("backBtn").onclick = ()=>{
+    if(index>0){
+      index--;
+      pageEls[index].classList.remove("flipped");
+      updateBtns();
+    }
+  };
+
+  updateBtns();
+}
 </script>
+
 </body>
 </html>
