@@ -3,1246 +3,236 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Constellation — Rose Flip-Book Gift</title>
-<meta name="description" content="Create and view beautiful animated gift letters. Generate links, share via WhatsApp." />
+<title>Rose Gift System</title>
+<meta name="description" content="Sender & Receiver pages for rose gift" />
 <style>
-  /* ========== ROOT & GLOBAL ========== */
   :root{
     --bg:#07060a; --card:#0f1420; --muted:#eadfe6;
     --accent1:#ff8fb3; --accent2:#f6d4b8; --accent3:#9b5f8a;
     --glass: rgba(255,255,255,0.02); --glass-border: rgba(255,255,255,0.04);
-    --radius:12px; --transition:all 0.3s ease;
+    --radius:12px;
   }
-  *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:var(--muted)}
-  html,body{height:100%;background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
-  body{
-    background:
-      radial-gradient(1200px 600px at 10% 10%, rgba(255,140,160,0.06), transparent 8%),
-      radial-gradient(800px 400px at 90% 90%, rgba(155,95,138,0.03), transparent 6%),
-      linear-gradient(180deg, #07060a 0%, #0a080d 100%);
-    position:relative;
+  *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;color:var(--muted);}
+  html,body{height:100%;margin:0;background:
+    radial-gradient(1200px 600px at 10% 10%, rgba(255,140,160,0.06), transparent 8%),
+    radial-gradient(800px 400px at 90% 90%, rgba(155,95,138,0.03), transparent 6%),
+    var(--bg); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+  a{color:var(--accent2)}
+  .container{max-width:600px;margin:60px auto;padding:24px;}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0.01));border:1px solid var(--glass-border);backdrop-filter: blur(6px) saturate(120%);border-radius:var(--radius);padding:28px 32px;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+  h1{margin:0 0 24px 0;font-size:26px;color:var(--accent2);text-align:center;}
+  label{display:block;margin-top:18px;font-size:14px;color:#f6e9ef}
+  input[type=text], input[type=url], input[type=tel], select, textarea{
+    width:100%;padding:12px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:rgba(0,0,0,0.2);color:var(--muted);margin-top:8px;
+    transition:all 0.2s;
   }
-  
-  /* ========== CANVAS BACKGROUND ========== */
-  #bgCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
-  
-  /* ========== MODE SWITCHER ========== */
-  .mode-switcher{position:fixed;top:20px;right:20px;z-index:100;display:flex;background:rgba(15,14,20,0.7);backdrop-filter:blur(10px);border-radius:50px;padding:4px;border:1px solid rgba(255,255,255,0.05);}
-  .mode-btn{padding:8px 16px;border-radius:50px;border:none;background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:var(--transition);}
-  .mode-btn.active{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;}
-  
-  /* ========== CONTAINERS ========== */
-  .main-container{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:20px;}
-  .content-wrapper{width:100%;max-width:1200px;margin:0 auto;}
-  
-  /* ========== SENDER STYLES ========== */
-  .sender-view,.receiver-view{display:none;}
-  .sender-view.active,.receiver-view.active{display:block;animation:fadeIn 0.5s ease;}
-  
-  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
-  
-  .sender-card,.receiver-card{
-    background:linear-gradient(135deg, rgba(15,20,32,0.85), rgba(10,12,20,0.9));
-    backdrop-filter:blur(12px) saturate(180%);
-    border:1px solid rgba(255,255,255,0.06);
-    border-radius:var(--radius);
-    padding:40px;
-    box-shadow:0 20px 60px rgba(0,0,0,0.4),
-               inset 0 1px 0 rgba(255,255,255,0.05);
-    max-width:500px;
-    margin:0 auto;
-    position:relative;
-    overflow:hidden;
+  input:focus, select:focus, textarea:focus{
+    outline:none;border-color:var(--accent1);box-shadow:0 0 0 2px rgba(255,143,179,0.1);
   }
-  .sender-card::before,.receiver-card::before{
-    content:'';
-    position:absolute;
-    top:0;left:0;right:0;
-    height:1px;
-    background:linear-gradient(90deg,transparent,var(--accent1),var(--accent2),transparent);
-    opacity:0.3;
-  }
-  
-  .sender-title{font-size:28px;color:var(--accent2);margin-bottom:30px;text-align:center;font-weight:700;position:relative;}
-  .sender-title::after{content:'';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:60px;height:3px;background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:2px;}
-  
-  .form-group{margin-bottom:24px;}
-  .form-label{display:block;margin-bottom:8px;color:#f6e9ef;font-size:14px;font-weight:500;}
-  .form-input{
-    width:100%;padding:14px 16px;
-    background:rgba(0,0,0,0.3);
-    border:1px solid rgba(255,255,255,0.08);
-    border-radius:10px;
-    color:var(--muted);
-    font-size:15px;
-    transition:var(--transition);
-  }
-  .form-input:focus{
-    outline:none;
-    border-color:var(--accent1);
-    box-shadow:0 0 0 3px rgba(255,143,179,0.1);
-    background:rgba(0,0,0,0.4);
-  }
-  .form-input::placeholder{color:rgba(234,223,230,0.4);}
-  
-  .form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23eadfe6' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;background-size:16px;padding-right:40px;}
-  
-  .button-group{display:flex;gap:12px;margin-top:32px;}
-  .btn{
-    padding:14px 24px;
-    border-radius:10px;
-    border:none;
-    cursor:pointer;
-    font-weight:600;
-    font-size:15px;
-    transition:var(--transition);
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-  }
+  textarea{min-height:100px;resize:vertical;}
+  .btn-group{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;}
+  .btn{padding:14px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;transition:all 0.2s;}
   .btn:hover{transform:translateY(-2px);}
-  .btn-primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;}
-  .btn-secondary{background:transparent;border:1px solid rgba(255,255,255,0.12);color:var(--muted);}
-  .btn-copy{background:linear-gradient(90deg,#ffd6c8,#ffddea);color:#371a15;}
-  
-  .output-box{
-    margin-top:24px;
-    padding:16px;
-    background:rgba(0,0,0,0.2);
-    border:1px solid rgba(255,255,255,0.05);
-    border-radius:10px;
-    font-size:14px;
-    line-height:1.6;
-  }
-  .output-box a{color:var(--accent2);word-break:break-all;}
+  .primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;}
+  .copy{background:linear-gradient(90deg,#ffd6c8,#ffddea);color:#371a15;}
+  #output{margin-top:20px;padding:16px;border-radius:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.05);}
+  .small{font-size:13px;color:#e5d8de;margin-top:8px;line-height:1.5;}
   .success{color:#a8ffb3;}
   .error{color:#ff8f8f;}
-  
-  .hint-text{font-size:13px;color:rgba(229,216,222,0.7);margin-top:8px;line-height:1.5;}
-  
-  /* ========== RECEIVER STYLES ========== */
-  .receiver-card{max-width:800px;padding:0;}
-  
-  .receiver-header{
-    padding:30px 40px;
-    background:linear-gradient(180deg, rgba(255,255,255,0.03), transparent);
-    border-bottom:1px solid rgba(255,255,255,0.05);
-  }
-  .gift-label{font-size:14px;color:#f0dfe6;margin-bottom:4px;}
-  .recipient-name{font-size:32px;font-weight:800;color:var(--accent2);margin-bottom:8px;}
-  .sender-info{font-size:16px;color:#e9dfe6;}
-  .sender-name{color:var(--accent1);font-weight:600;}
-  
-  .book-container{
-    padding:40px;
-    perspective:1400px;
-    position:relative;
-  }
-  .book{
-    width:100%;height:420px;
-    position:relative;
-    transform-style:preserve-3d;
-  }
-  .page{
-    position:absolute;
-    top:0;left:0;
-    width:100%;height:100%;
-    transform-style:preserve-3d;
-    transform-origin:left center;
-    border-radius:12px;
-    overflow:hidden;
-    box-shadow:0 20px 50px rgba(0,0,0,0.4);
-    transition:transform 1s cubic-bezier(0.2,0.9,0.2,1);
-    background:linear-gradient(135deg, rgba(20,18,30,0.95), rgba(15,12,24,0.98));
-  }
-  .page-content{
-    padding:40px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    height:100%;
-    background:linear-gradient(135deg, rgba(255,240,245,0.01), transparent);
-  }
-  .page-frame{
-    padding:30px;
-    border-radius:12px;
-    background:linear-gradient(180deg, rgba(255,240,245,0.02), rgba(255,240,245,0.005));
-    border:1px solid rgba(255,255,255,0.04);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.02);
-  }
-  .page-title{font-size:24px;color:var(--accent3);margin-bottom:20px;font-weight:600;}
-  .page-text{
-    white-space:pre-wrap;
-    line-height:1.7;
-    color:#efe1e7;
-    font-size:16px;
-    margin-bottom:20px;
-  }
-  .page-back{
-    position:absolute;
-    inset:0;
-    background:linear-gradient(135deg, rgba(10,8,15,0.9), rgba(6,5,10,0.95));
-    transform:rotateY(180deg);
-    backface-visibility:hidden;
-  }
-  .page.flipped{transform:rotateY(-180deg) translateX(-3px);}
-  
-  .signature{
-    text-align:right;
-    color:var(--accent1);
-    font-style:italic;
-    font-size:18px;
-    margin-top:20px;
-  }
-  
-  /* Controls */
-  .controls{
-    padding:30px 40px;
-    border-top:1px solid rgba(255,255,255,0.05);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:20px;
-  }
-  .page-controls{display:flex;gap:10px;}
-  .status-info{display:flex;align-items:center;gap:15px;font-size:14px;}
-  .page-indicator{background:rgba(0,0,0,0.3);padding:6px 12px;border-radius:6px;}
-  .music-status{color:var(--accent2);}
-  
-  /* Tiles */
-  .tiles-container{padding:0 40px 30px;}
-  .tiles-grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:12px;
-    margin-bottom:20px;
-  }
-  .tile{
-    padding:20px;
-    border-radius:10px;
-    background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.008));
-    border:1px solid rgba(255,255,255,0.04);
-    opacity:0;
-    transform:translateY(15px);
-    transition:all 0.5s ease;
-  }
-  .tile.show{
-    opacity:1;
-    transform:translateY(0);
-    box-shadow:0 10px 30px rgba(0,0,0,0.3);
-  }
-  .tile-title{font-size:16px;color:var(--accent2);margin-bottom:8px;font-weight:600;}
-  .tile-text{font-size:13px;color:#f1dfe6;line-height:1.5;}
-  
-  .action-buttons{display:flex;gap:10px;justify-content:center;}
-  
-  /* Visual Effects */
-  .ripple-effect{
-    position:absolute;
-    right:40px;
-    top:40px;
-    width:100px;
-    height:100px;
-    pointer-events:none;
-  }
-  .ripple{
-    position:absolute;
-    border-radius:50%;
-    opacity:0.06;
-    background:radial-gradient(circle at 30% 30%, rgba(255,140,160,0.9), rgba(246,212,184,0.7));
-    transform:scale(0.2);
-    transition:all 0.3s ease;
-  }
-  
-  .flame-effect{
-    position:fixed;
-    left:20px;
-    bottom:20px;
-    z-index:10;
-    pointer-events:none;
-  }
-  .flame{
-    width:60px;
-    height:60px;
-    border-radius:50%;
-    background:radial-gradient(circle at 30% 30%, rgba(255,220,190,0.95), rgba(255,180,200,0.9) 30%, rgba(255,140,160,0.75) 55%);
-    box-shadow:0 8px 40px rgba(255,120,160,0.15);
-    transform-origin:center;
-    transition:transform 0.2s ease;
-  }
-  
-  /* Responsive */
-  @media(max-width:900px){
-    .book{height:320px;}
-    .page-content{padding:25px;}
-    .page-frame{padding:20px;}
-    .page-title{font-size:20px;}
-    .page-text{font-size:14px;}
-    .tiles-grid{grid-template-columns:repeat(2,1fr);}
-    .controls{flex-direction:column;text-align:center;}
-    .mode-switcher{top:10px;right:10px;}
-  }
-  @media(max-width:600px){
-    .sender-card,.receiver-card{padding:25px;}
-    .receiver-header,.book-container,.controls,.tiles-container{padding:25px;}
-    .book{height:250px;}
-    .recipient-name{font-size:24px;}
-    .page-title{font-size:18px;}
-    .tiles-grid{grid-template-columns:1fr;}
-    .button-group{flex-direction:column;}
+  /* Receiver page */
+  .receiver-container{display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  .video-half{height:50vh;width:100%;background:#000;display:flex;align-items:center;justify-content:center;}
+  .message-half{height:50vh;width:100%;overflow:auto;padding:24px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border-top:1px solid rgba(255,255,255,0.04);}
+  .msg-content{font-size:18px;line-height:1.6;margin-bottom:16px;}
+  .nav-btn{padding:12px 20px;border-radius:10px;border:none;cursor:pointer;font-weight:700;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#2b0b10;margin-top:12px;}
+  @media(max-width:640px){
+    .container{margin:20px auto;padding:16px;}
+    .card{padding:20px;}
+    h1{font-size:22px;}
+    .btn-group{flex-direction:column;}
     .btn{width:100%;}
   }
-  
-  /* Loading */
-  .loading{display:none;text-align:center;padding:40px;}
-  .loading.active{display:block;}
-  .spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--accent1);border-radius:50%;margin:0 auto 20px;animation:spin 1s linear infinite;}
-  @keyframes spin{100%{transform:rotate(360deg);}}
 </style>
 </head>
 <body>
-<!-- Background Canvas -->
-<canvas id="bgCanvas"></canvas>
 
-<!-- Mode Switcher -->
-<div class="mode-switcher">
-  <button class="mode-btn active" data-mode="sender">Create Gift</button>
-  <button class="mode-btn" data-mode="receiver">View Gift</button>
+<!-- ================= SENDER PAGE ================= -->
+<div id="senderPage" class="container card">
+  <h1>Create a Rose Gift</h1>
+  
+  <label>Your name</label>
+  <input id="from" type="text" placeholder="e.g. Ezekiel">
+  
+  <label>Friend's name</label>
+  <input id="to" type="text" placeholder="e.g. Grace">
+  
+  <label>WhatsApp number (optional)</label>
+  <input id="wa" type="tel" placeholder="e.g. 254712345678">
+  
+  <label>Video ID or MP3 URL</label>
+  <input id="media" type="text" placeholder="YouTube ID or https://.../song.mp3">
+  
+  <label>Autoplay music?</label>
+  <select id="autoplay">
+    <option value="0">No</option>
+    <option value="1">Yes (muted for autoplay)</option>
+  </select>
+  
+  <label>Message (separate pages by `---`)</label>
+  <textarea id="message" placeholder="Write message page by page, use `---` to separate pages"></textarea>
+  
+  <div class="btn-group">
+    <button class="btn primary" id="genBtn">Generate Gift Link</button>
+    <button class="btn copy" id="copyBtn">Copy Link</button>
+  </div>
+  
+  <div id="output" class="small">Your link will appear here after generation.</div>
 </div>
 
-<div class="main-container">
-  <div class="content-wrapper">
-    
-    <!-- SENDER VIEW -->
-    <div class="sender-view active">
-      <div class="sender-card">
-        <h1 class="sender-title">Create Rose Gift</h1>
-        
-        <div class="form-group">
-          <label class="form-label">Your Name</label>
-          <input type="text" class="form-input" id="fromInput" placeholder="Ezekiel" value="">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Friend's Name</label>
-          <input type="text" class="form-input" id="toInput" placeholder="Grace" value="">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">WhatsApp Number (Optional)</label>
-          <input type="tel" class="form-input" id="waInput" placeholder="254712345678">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">YouTube ID or MP3 URL</label>
-          <input type="text" class="form-input" id="mediaInput" placeholder="dQw4w9WgXcQ or https://example.com/song.mp3">
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label">Autoplay Music?</label>
-          <select class="form-input form-select" id="autoplayInput">
-            <option value="0">No, let recipient choose</option>
-            <option value="1">Yes (muted initially for autoplay)</option>
-          </select>
-        </div>
-        
-        <div class="button-group">
-          <button class="btn btn-primary" id="generateBtn">
-            <span>Generate Gift Link</span>
-          </button>
-          <button class="btn btn-copy" id="copyBtn">
-            <span>Copy Link</span>
-          </button>
-        </div>
-        
-        <div class="output-box" id="outputBox">
-          Your gift link will appear here.
-        </div>
-        
-        <div class="hint-text">
-          <strong>How it works:</strong> Fill the form, generate a link, share it with your friend. When they open it, they'll see a beautiful animated gift.
-        </div>
-      </div>
-    </div>
-    
-    <!-- RECEIVER VIEW -->
-    <div class="receiver-view">
-      <div class="receiver-card">
-        <div class="receiver-header">
-          <div class="gift-label">A Gift For</div>
-          <div class="recipient-name" id="recipientName">Friend</div>
-          <div class="sender-info">From <span class="sender-name" id="senderName">Someone Special</span></div>
-        </div>
-        
-        <div class="book-container">
-          <div class="book" id="book">
-            <!-- Page 1 -->
-            <div class="page" data-index="0">
-              <div class="page-content">
-                <div class="page-frame">
-                  <div class="page-title">To the One My Heart Chose</div>
-                  <div class="page-text" id="pageText0">My Beloved,
-
-There are moments in life when the world slows just enough for the heart to speak clearly.
-In those moments, it whispers your name.
-
-Your presence brings warmth to my days and peace to my nights. When I think of you, the world feels softer, gentler, and more beautiful. You are the quiet miracle I never knew how much I needed.
-
-With you, ordinary moments become memories worth holding.
-With you, silence becomes comfort.
-With you, my heart finds its home.</div>
-                  <div class="signature" id="signature0">— [Your Name]</div>
-                </div>
-              </div>
-              <div class="page-back"></div>
-            </div>
-            
-            <!-- Page 2 -->
-            <div class="page" data-index="1">
-              <div class="page-content">
-                <div class="page-frame">
-                  <div class="page-title">A Letter Wrapped in Rose Light</div>
-                  <div class="page-text" id="pageText1">My Beloved,
-
-Like the dawn that paints the sky with tender light, your presence colors my world with beauty. Each heartbeat whispers your name, and every breath carries the memory of your touch. You are the poem my soul has longed to write, the melody that lingers in the quiet of night.
-
-When I gaze into your eyes, I see galaxies—vast, infinite, and filled with wonder. Your smile is the sun that warms my spirit, and your laughter the gentle rain that nourishes my heart. With you, time slows, and the ordinary becomes extraordinary.
-
-You are the gentle wind that stirs my dreams, the flame that keeps my spirit alive. In your embrace, I find both sanctuary and adventure— a place where I am entirely myself yet inspired to become even more.</div>
-                  <div class="signature" id="signature1">— [Your Name]</div>
-                </div>
-              </div>
-              <div class="page-back"></div>
-            </div>
-            
-            <!-- Page 3 -->
-            <div class="page" data-index="2">
-              <div class="page-content">
-                <div class="page-frame">
-                  <div class="page-title">If Love Had a Shape</div>
-                  <div class="page-text" id="pageText2">If love were a sunrise,
-it would rise in your eyes.
-If love were a whisper,
-it would speak in your smile.
-
-If love were a journey,
-I'd walk it beside you,
-with every step becoming
-a story of us.
-
-And if love were forever,
-then forever would begin
-the moment I found you.</div>
-                  <div class="signature" id="signature2">— [Your Name]</div>
-                </div>
-              </div>
-              <div class="page-back"></div>
-            </div>
-            
-            <!-- Page 4 -->
-            <div class="page" data-index="3">
-              <div class="page-content">
-                <div class="page-frame">
-                  <div class="page-title">Final Whisper</div>
-                  <div class="page-text" id="pageText3">No matter where life takes us,
-no matter how the winds may change,
-my heart will always carry the light you gave it.
-
-You are cherished.
-You are valued.
-You are loved — endlessly.</div>
-                  <div class="signature" id="signature3">— [Your Name]</div>
-                </div>
-              </div>
-              <div class="page-back"></div>
-            </div>
-          </div>
-          
-          <div class="ripple-effect">
-            <div class="ripple" id="ripple"></div>
-          </div>
-        </div>
-        
-        <div class="controls">
-          <div class="page-controls">
-            <button class="btn btn-secondary" id="prevBtn">◂ Prev</button>
-            <button class="btn btn-primary" id="turnBtn">Turn Page</button>
-            <button class="btn btn-secondary" id="nextBtn">Next ▸</button>
-          </div>
-          
-          <div class="status-info">
-            <div class="page-indicator" id="pageIndicator">Page 1 / 4</div>
-            <div class="music-status" id="musicStatus">No music</div>
-            <a href="#" class="btn btn-secondary" id="waReplyBtn" target="_blank" style="display:none">Reply on WhatsApp</a>
-          </div>
-        </div>
-        
-        <div class="tiles-container">
-          <div class="tiles-grid" id="tilesGrid">
-            <!-- Tiles will be generated here -->
-          </div>
-          
-          <div class="action-buttons">
-            <button class="btn btn-secondary" id="playSequenceBtn">▶ Play Sequence</button>
-            <button class="btn btn-secondary" id="replayBtn">↻ Replay</button>
-            <button class="btn btn-secondary" id="shareBtn">🔗 Share Gift</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Loading -->
-    <div class="loading" id="loading">
-      <div class="spinner"></div>
-      <p>Loading gift...</p>
-    </div>
+<!-- ================= RECEIVER PAGE ================= -->
+<div id="receiverPage" style="display:none;" class="receiver-container">
+  <div class="video-half" id="videoContainer"></div>
+  <div class="message-half">
+    <div class="msg-content" id="msgContent"></div>
+    <button class="nav-btn" id="nextPageBtn">Next Page</button>
   </div>
 </div>
 
-<!-- Flame Effect -->
-<div class="flame-effect">
-  <div class="flame" id="flame"></div>
-</div>
-
-<!-- Audio Elements (hidden) -->
-<audio id="audioPlayer" crossorigin="anonymous" style="display:none"></audio>
-<iframe id="ytPlayer" style="display:none" sandbox="allow-scripts allow-same-origin"></iframe>
-
 <script>
-// ============================================
-// GLOBAL VARIABLES
-// ============================================
-let currentMode = 'sender';
-let giftLink = '';
-let currentPage = 0;
-const totalPages = 4;
-let messageTimers = [];
-let audioContext = null;
-let audioAnalyser = null;
-let animationFrameId = null;
-let currentMediaType = '';
-let currentYTId = '';
-let currentMP3 = '';
-let syncInterval = null;
-let fallbackPulseInterval = null;
-const tileMessages = [
-  {title:'Her Light', text:'Like dawn painting the sky'},
-  {title:'Her Strength', text:'Gentle yet unbreakable'},
-  {title:'Her Mystery', text:'Galaxies in your eyes'},
-  {title:'Final Message', text:'May this melody stay with you forever.'}
-];
-
-// ============================================
-// DOM ELEMENTS
-// ============================================
-// Mode switcher
-const modeBtns = document.querySelectorAll('.mode-btn');
-const senderView = document.querySelector('.sender-view');
-const receiverView = document.querySelector('.receiver-view');
-
-// Sender elements
-const fromInput = document.getElementById('fromInput');
-const toInput = document.getElementById('toInput');
-const waInput = document.getElementById('waInput');
-const mediaInput = document.getElementById('mediaInput');
-const autoplayInput = document.getElementById('autoplayInput');
-const generateBtn = document.getElementById('generateBtn');
-const copyBtn = document.getElementById('copyBtn');
-const outputBox = document.getElementById('outputBox');
-
-// Receiver elements
-const recipientName = document.getElementById('recipientName');
-const senderName = document.getElementById('senderName');
-const book = document.getElementById('book');
-const pages = document.querySelectorAll('.page');
-const pageIndicator = document.getElementById('pageIndicator');
-const prevBtn = document.getElementById('prevBtn');
-const nextBtn = document.getElementById('nextBtn');
-const turnBtn = document.getElementById('turnBtn');
-const tilesGrid = document.getElementById('tilesGrid');
-const playSequenceBtn = document.getElementById('playSequenceBtn');
-const replayBtn = document.getElementById('replayBtn');
-const shareBtn = document.getElementById('shareBtn');
-const waReplyBtn = document.getElementById('waReplyBtn');
-const musicStatus = document.getElementById('musicStatus');
-const loading = document.getElementById('loading');
-
-// Visual effects
-const ripple = document.getElementById('ripple');
-const flame = document.getElementById('flame');
-const bgCanvas = document.getElementById('bgCanvas');
-const bgCtx = bgCanvas.getContext('2d');
-
-// Audio elements
-const audioPlayer = document.getElementById('audioPlayer');
-const ytPlayer = document.getElementById('ytPlayer');
-
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
-function showLoading(show) {
-  loading.classList.toggle('active', show);
-}
-
-function encodeVal(str) {
-  return encodeURIComponent(str.trim());
-}
-
-function decodeVal(str) {
-  try {
-    return decodeURIComponent(str);
-  } catch {
-    return str;
-  }
-}
-
-function extractYouTubeId(input) {
-  if (!input) return '';
-  const str = input.trim();
+(function(){
+  const senderPage = document.getElementById('senderPage');
+  const receiverPage = document.getElementById('receiverPage');
   
-  // If it's already an ID
-  if (/^[A-Za-z0-9_-]{11}$/.test(str)) return str;
+  const genBtn = document.getElementById('genBtn');
+  const copyBtn = document.getElementById('copyBtn');
+  const output = document.getElementById('output');
+  const fromInput = document.getElementById('from');
+  const toInput = document.getElementById('to');
+  const waInput = document.getElementById('wa');
+  const mediaInput = document.getElementById('media');
+  const autoplayInput = document.getElementById('autoplay');
+  const messageInput = document.getElementById('message');
   
-  try {
-    const url = new URL(str);
-    // youtu.be links
-    if (url.hostname.includes('youtu.be')) {
-      return url.pathname.slice(1);
+  let lastLink = '';
+  
+  function encodeVal(s){ return encodeURIComponent((s||'').trim()); }
+  
+  function extractYouTubeId(input){
+    if(!input) return '';
+    input = input.trim();
+    if(/^[A-Za-z0-9_-]{6,20}$/.test(input) && !input.includes('http')) return input;
+    try {
+      const u = new URL(input, location.origin);
+      if(u.hostname.includes('youtu.be')) return u.pathname.slice(1).split('/')[0];
+      if(u.hostname.includes('youtube') || u.hostname.includes('yewtu')) {
+        if(u.searchParams.get('v')) return u.searchParams.get('v');
+        const parts = u.pathname.split('/');
+        for(let i=parts.length-1;i>=0;--i){
+          const seg=parts[i];
+          if(/^[A-Za-z0-9_-]{6,20}$/.test(seg)) return seg;
+        }
+      }
+    } catch(e){
+      const match = input.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=))([A-Za-z0-9_-]{6,20})/);
+      if(match) return match[1];
     }
-    // youtube.com links
-    if (url.hostname.includes('youtube.com') || url.hostname.includes('youtu.be')) {
-      return url.searchParams.get('v') || url.pathname.split('/').pop();
-    }
-  } catch {
-    // Try to extract from string
-    const match = str.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=))([A-Za-z0-9_-]{11})/);
-    return match ? match[1] : '';
-  }
-  return '';
-}
-
-// ============================================
-// MODE SWITCHING
-// ============================================
-function switchMode(mode) {
-  currentMode = mode;
-  
-  // Update active button
-  modeBtns.forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.mode === mode);
-  });
-  
-  // Show/hide views
-  senderView.classList.toggle('active', mode === 'sender');
-  receiverView.classList.toggle('active', mode === 'receiver');
-  
-  // If switching to receiver and we have URL params, load them
-  if (mode === 'receiver') {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('from') || params.has('to')) {
-      loadGiftFromURL();
-    } else {
-      // Show sample gift
-      recipientName.textContent = 'Grace';
-      senderName.textContent = 'Ezekiel';
-      updateSignatures('Ezekiel');
-      renderTiles();
-      updatePageIndicator();
-    }
-  }
-}
-
-modeBtns.forEach(btn => {
-  btn.addEventListener('click', () => switchMode(btn.dataset.mode));
-});
-
-// ============================================
-// SENDER FUNCTIONALITY
-// ============================================
-function generateGiftLink() {
-  const from = fromInput.value.trim();
-  const to = toInput.value.trim();
-  const wa = waInput.value.trim();
-  const media = mediaInput.value.trim();
-  const autoplay = autoplayInput.value === '1';
-  
-  if (!from || !to) {
-    outputBox.innerHTML = `<span class="error">Please enter both names</span>`;
-    return;
+    return '';
   }
   
-  // Build URL with current page as base
-  const baseURL = window.location.origin + window.location.pathname;
-  const params = new URLSearchParams();
-  
-  params.set('from', encodeVal(from));
-  params.set('to', encodeVal(to));
-  
-  const ytId = extractYouTubeId(media);
-  if (ytId) {
-    params.set('yt', ytId);
-  } else if (media) {
-    params.set('mp3', encodeVal(media));
-  }
-  
-  if (wa) params.set('wa', encodeVal(wa));
-  if (autoplay) params.set('autoplay', '1');
-  
-  giftLink = `${baseURL}?${params.toString()}#finale`;
-  
-  // Create WhatsApp share link
-  let waShareLink = '';
-  if (wa) {
-    const shareText = `A beautiful gift for you, ${to}: ${giftLink}`;
-    waShareLink = `https://wa.me/${wa}?text=${encodeURIComponent(shareText)}`;
-  }
-  
-  // Display the link
-  outputBox.innerHTML = `
-    <span class="success">✓ Gift link generated!</span><br><br>
-    <strong>Share this link:</strong><br>
-    <a href="${giftLink}" target="_blank">${giftLink}</a>
-    ${waShareLink ? `<br><br><a href="${waShareLink}" target="_blank" class="btn" style="margin-top:10px;display:inline-block;">📱 Share via WhatsApp</a>` : ''}
-  `;
-  
-  // Animate success
-  outputBox.style.animation = 'none';
-  setTimeout(() => {
-    outputBox.style.animation = 'fadeIn 0.5s ease';
-  }, 10);
-  
-  return giftLink;
-}
-
-async function copyToClipboard() {
-  if (!giftLink) {
-    giftLink = generateGiftLink();
-    if (!giftLink) return;
-  }
-  
-  try {
-    await navigator.clipboard.writeText(giftLink);
-    outputBox.innerHTML = `<span class="success">✓ Link copied to clipboard!</span>`;
-  } catch (err) {
-    // Fallback for older browsers
-    const textArea = document.createElement('textarea');
-    textArea.value = giftLink;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-    outputBox.innerHTML = `<span class="success">✓ Link copied!</span>`;
-  }
-}
-
-// ============================================
-// RECEIVER FUNCTIONALITY - GIFT DISPLAY
-// ============================================
-function loadGiftFromURL() {
-  showLoading(true);
-  
-  const params = new URLSearchParams(window.location.search);
-  const from = decodeVal(params.get('from') || 'Someone Special');
-  const to = decodeVal(params.get('to') || 'Friend');
-  const ytId = params.get('yt') || '';
-  const mp3 = params.get('mp3') ? decodeVal(params.get('mp3')) : '';
-  const wa = params.get('wa') || '';
-  const autoplay = params.get('autoplay') === '1';
-  
-  // Update names
-  recipientName.textContent = to;
-  senderName.textContent = from;
-  updateSignatures(from);
-  
-  // Setup WhatsApp reply
-  if (wa) {
-    const replyText = `Hi ${from}, thank you for the beautiful gift! 💖`;
-    waReplyBtn.href = `https://wa.me/${wa}?text=${encodeURIComponent(replyText)}`;
-    waReplyBtn.style.display = 'inline-block';
-  }
-  
-  // Setup media
-  setupMedia(ytId, mp3, autoplay);
-  
-  // Render tiles
-  renderTiles();
-  
-  // Update page display
-  updatePageIndicator();
-  
-  // Auto-play sequence if #finale is in URL
-  if (window.location.hash === '#finale') {
-    setTimeout(() => {
-      playSequence();
-    }, 1000);
-  }
-  
-  showLoading(false);
-}
-
-function updateSignatures(name) {
-  for (let i = 0; i < 4; i++) {
-    const sig = document.getElementById(`signature${i}`);
-    if (sig) sig.textContent = `— ${name}`;
-  }
-}
-
-function setupMedia(ytId, mp3, autoplay) {
-  // Clear any existing media
-  stopAllMedia();
-  
-  if (ytId) {
-    currentMediaType = 'youtube';
-    currentYTId = ytId;
+  function buildGiftLink(){
+    const from = (fromInput.value||'').trim();
+    const to = (toInput.value||'').trim();
+    const wa = (waInput.value||'').trim();
+    const med = (mediaInput.value||'').trim();
+    const ap = autoplayInput.value === '1';
+    const msg = (messageInput.value||'').trim();
     
-    const embedURL = `https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1&playsinline=1${autoplay ? '&autoplay=1&mute=1' : ''}`;
-    ytPlayer.src = embedURL;
-    musicStatus.textContent = 'YouTube music';
-    startFallbackPulse();
-    
-  } else if (mp3) {
-    currentMediaType = 'mp3';
-    currentMP3 = mp3;
-    
-    audioPlayer.src = mp3;
-    if (autoplay) {
-      audioPlayer.muted = true;
-      audioPlayer.autoplay = true;
+    if(!from || !to || !msg){
+      output.innerHTML = '<span class="error">❌ Please enter names and message.</span>';
+      return '';
     }
     
-    audioPlayer.onloadedmetadata = () => {
-      musicStatus.textContent = 'Music loaded';
-      setupAudioVisualizer();
-    };
+    const base = window.location.origin + window.location.pathname;
+    const params = new URLSearchParams();
+    params.set('from', encodeVal(from));
+    params.set('to', encodeVal(to));
+    params.set('msg', btoa(msg)); // base64 to hide
+    const yt = extractYouTubeId(med);
+    if(yt){ params.set('yt', yt); } else if(med){ params.set('mp3', encodeVal(med)); }
+    if(wa) params.set('num', encodeVal(wa));
+    if(ap) params.set('autoplay','1');
     
-    audioPlayer.onended = () => {
-      musicStatus.textContent = 'Music ended';
-      stopVisualizer();
-    };
+    const url = `${base}?${params.toString()}#receiver`;
+    lastLink = url;
     
-    musicStatus.textContent = 'Loading music...';
-  } else {
-    musicStatus.textContent = 'No music';
-  }
-}
-
-function stopAllMedia() {
-  // Stop audio
-  audioPlayer.pause();
-  audioPlayer.src = '';
-  
-  // Stop YouTube
-  ytPlayer.src = '';
-  
-  // Stop visualizer
-  stopVisualizer();
-  
-  // Stop fallback pulse
-  if (fallbackPulseInterval) {
-    clearInterval(fallbackPulseInterval);
-    fallbackPulseInterval = null;
-  }
-}
-
-// ============================================
-// PAGE NAVIGATION
-// ============================================
-function goToPage(pageIndex) {
-  if (pageIndex < 0 || pageIndex >= totalPages) return;
-  
-  currentPage = pageIndex;
-  
-  // Update page positions
-  pages.forEach((page, index) => {
-    if (index < currentPage) {
-      page.classList.add('flipped');
-    } else {
-      page.classList.remove('flipped');
-    }
-  });
-  
-  updatePageIndicator();
-  
-  // Add subtle animation
-  book.style.transform = 'translateY(-5px)';
-  setTimeout(() => {
-    book.style.transform = 'translateY(0)';
-  }, 200);
-}
-
-function nextPage() {
-  if (currentPage < totalPages - 1) {
-    goToPage(currentPage + 1);
-  }
-}
-
-function prevPage() {
-  if (currentPage > 0) {
-    goToPage(currentPage - 1);
-  }
-}
-
-function updatePageIndicator() {
-  pageIndicator.textContent = `Page ${currentPage + 1} / ${totalPages}`;
-}
-
-// ============================================
-// TILES & SEQUENCE
-// ============================================
-function renderTiles() {
-  tilesGrid.innerHTML = '';
-  
-  tileMessages.forEach((msg, index) => {
-    const tile = document.createElement('div');
-    tile.className = 'tile';
-    tile.dataset.index = index;
-    tile.innerHTML = `
-      <div class="tile-title">${msg.title}</div>
-      <div class="tile-text">${msg.text}</div>
+    output.innerHTML = `
+      <span class="success">✅ Gift link generated!</span><br><br>
+      <strong>Link:</strong><br>
+      <a href="${url}" target="_blank" style="word-break:break-all;">${url}</a>
     `;
-    tilesGrid.appendChild(tile);
-  });
-}
-
-function playSequence() {
-  // Clear any existing timers
-  messageTimers.forEach(timer => clearTimeout(timer));
-  messageTimers = [];
-  
-  // Reset to first page
-  goToPage(0);
-  
-  // Hide all tiles initially
-  const tiles = document.querySelectorAll('.tile');
-  tiles.forEach(tile => tile.classList.remove('show'));
-  
-  // Start music if available
-  if (currentMediaType === 'mp3') {
-    audioPlayer.currentTime = 0;
-    audioPlayer.play().catch(console.error);
+    
+    return url;
   }
   
-  // Show tiles with delays
-  tiles.forEach((tile, index) => {
-    const timer = setTimeout(() => {
-      tile.classList.add('show');
-      
-      // Turn page for each tile (except first)
-      if (index > 0) {
-        goToPage(Math.min(index, totalPages - 1));
-      }
-      
-      // Unmute audio on last tile if muted
-      if (index === tiles.length - 1 && audioPlayer.muted) {
-        audioPlayer.muted = false;
-      }
-    }, 800 + index * 2000);
-    
-    messageTimers.push(timer);
+  genBtn.addEventListener('click', ()=>buildGiftLink());
+  copyBtn.addEventListener('click', async ()=>{
+    if(!lastLink) { const url=buildGiftLink(); if(!url) return; }
+    try{ await navigator.clipboard.writeText(lastLink); output.innerHTML='<span class="success">✅ Link copied!</span>'; }
+    catch(e){ alert('Copy manually: '+lastLink); }
   });
-}
-
-// ============================================
-// AUDIO VISUALIZER
-// ============================================
-function setupAudioVisualizer() {
-  try {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const source = audioContext.createMediaElementSource(audioPlayer);
-    audioAnalyser = audioContext.createAnalyser();
-    audioAnalyser.fftSize = 256;
-    source.connect(audioAnalyser);
-    audioAnalyser.connect(audioContext.destination);
-    
-    startVisualizer();
-  } catch (error) {
-    console.log('Audio visualizer not supported');
-    startFallbackPulse();
-  }
-}
-
-function startVisualizer() {
-  if (!audioAnalyser) return;
   
-  const dataArray = new Uint8Array(audioAnalyser.frequencyBinCount);
-  
-  function updateVisualizer() {
-    audioAnalyser.getByteFrequencyData(dataArray);
+  // ================= RECEIVER LOGIC =================
+  function initReceiver(){
+    const query = new URLSearchParams(window.location.search);
+    const msgB64 = query.get('msg');
+    const yt = query.get('yt');
+    const mp3 = query.get('mp3');
+    const autoplay = query.get('autoplay') === '1';
     
-    // Calculate average volume
-    let sum = 0;
-    for (let i = 0; i < dataArray.length; i++) {
-      sum += dataArray[i];
+    if(!msgB64){ senderPage.style.display='block'; return; } // fallback
+    
+    senderPage.style.display='none';
+    receiverPage.style.display='flex';
+    
+    // Decode pages
+    const pages = atob(msgB64).split('---').map(s=>s.trim()).filter(s=>s);
+    let currentPage = 0;
+    
+    const msgContent = document.getElementById('msgContent');
+    const nextBtn = document.getElementById('nextPageBtn');
+    
+    // Video container
+    const videoContainer = document.getElementById('videoContainer');
+    if(yt){
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=${autoplay?1:0}&mute=${autoplay?1:0}&controls=1`;
+      iframe.style.width='100%'; iframe.style.height='100%'; iframe.frameBorder='0';
+      iframe.allow='autoplay; encrypted-media; fullscreen';
+      videoContainer.appendChild(iframe);
+    } else if(mp3){
+      const audio = document.createElement('audio');
+      audio.src = mp3; audio.controls = true; audio.autoplay = autoplay;
+      audio.style.width='80%';
+      videoContainer.appendChild(audio);
+    } else {
+      videoContainer.innerHTML='<span style="color:#fff;">No media provided</span>';
     }
-    const average = sum / dataArray.length / 255;
     
-    // Update visual effects
-    updateVisualEffects(average);
+    function showPage(i){
+      if(i>=pages.length){ msgContent.innerHTML='🎉 End of gift!'; nextBtn.style.display='none'; return; }
+      msgContent.innerHTML=pages[i];
+    }
     
-    animationFrameId = requestAnimationFrame(updateVisualizer);
-  }
-  
-  updateVisualizer();
-}
-
-function stopVisualizer() {
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
-    animationFrameId = null;
-  }
-  
-  if (audioContext) {
-    audioContext.close().catch(console.error);
-    audioContext = null;
-    audioAnalyser = null;
-  }
-}
-
-function startFallbackPulse() {
-  if (fallbackPulseInterval) {
-    clearInterval(fallbackPulseInterval);
-  }
-  
-  let pulse = 0;
-  let direction = 1;
-  
-  fallbackPulseInterval = setInterval(() => {
-    pulse += direction * 0.1;
-    if (pulse >= 1) direction = -1;
-    if (pulse <= 0.1) direction = 1;
-    
-    updateVisualEffects(pulse * 0.7);
-  }, 100);
-}
-
-function updateVisualEffects(strength) {
-  // Clamp strength between 0 and 1
-  const s = Math.max(0, Math.min(1, strength));
-  
-  // Update ripple
-  ripple.style.transform = `scale(${0.3 + s * 1.5})`;
-  ripple.style.opacity = `${0.05 + s * 0.2}`;
-  
-  // Update flame
-  flame.style.transform = `scale(${1 + s * 0.1}) translateY(${-s * 5}px)`;
-}
-
-// ============================================
-// BACKGROUND ANIMATION
-// ============================================
-function initBackground() {
-  function resizeCanvas() {
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
-  }
-  
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  
-  const stars = [];
-  const starCount = Math.min(200, Math.floor((window.innerWidth * window.innerHeight) / 4000));
-  
-  // Create stars
-  for (let i = 0; i < starCount; i++) {
-    stars.push({
-      x: Math.random() * bgCanvas.width,
-      y: Math.random() * bgCanvas.height,
-      size: Math.random() * 2 + 0.5,
-      speed: Math.random() * 0.5 + 0.1,
-      brightness: Math.random() * 0.8 + 0.2,
-      pulseSpeed: Math.random() * 0.02 + 0.01
-    });
-  }
-  
-  // Particles for floating effect
-  const particles = [];
-  
-  function animate() {
-    // Clear with subtle gradient
-    const gradient = bgCtx.createRadialGradient(
-      bgCanvas.width * 0.3, bgCanvas.height * 0.7, 0,
-      bgCanvas.width * 0.3, bgCanvas.height * 0.7, bgCanvas.width * 0.8
-    );
-    gradient.addColorStop(0, 'rgba(155, 95, 138, 0.03)');
-    gradient.addColorStop(1, 'rgba(7, 6, 10, 0)');
-    
-    bgCtx.fillStyle = gradient;
-    bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
-    
-    // Draw stars
-    stars.forEach(star => {
-      // Move star
-      star.x += star.speed;
-      if (star.x > bgCanvas.width) star.x = 0;
-      
-      // Pulse effect
-      const pulse = Math.sin(Date.now() * star.pulseSpeed) * 0.3 + 0.7;
-      
-      // Draw star
-      bgCtx.beginPath();
-      bgCtx.arc(star.x, star.y, star.size * pulse, 0, Math.PI * 2);
-      bgCtx.fillStyle = `rgba(255, 240, 245, ${star.brightness * pulse * 0.5})`;
-      bgCtx.fill();
+    nextBtn.addEventListener('click', ()=>{
+      currentPage++;
+      showPage(currentPage);
     });
     
-    // Occasionally add particles
-    if (Math.random() < 0.1) {
-      particles.push({
-        x: Math.random() * bgCanvas.width,
-        y: bgCanvas.height,
-        size: Math.random() * 3 + 1,
-        speed: Math.random() * 2 + 1,
-        color: `rgba(${Math.random() > 0.5 ? '255,143,179' : '246,212,184'}, ${Math.random() * 0.3 + 0.1})`
-      });
-    }
-    
-    // Update and draw particles
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.y -= p.speed;
-      
-      bgCtx.beginPath();
-      bgCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      bgCtx.fillStyle = p.color;
-      bgCtx.fill();
-      
-      // Remove if off screen
-      if (p.y < -10) {
-        particles.splice(i, 1);
-      }
-    }
-    
-    requestAnimationFrame(animate);
+    showPage(currentPage);
   }
   
-  animate();
-}
-
-// ============================================
-// EVENT LISTENERS
-// ============================================
-// Sender events
-generateBtn.addEventListener('click', generateGiftLink);
-copyBtn.addEventListener('click', copyToClipboard);
-
-// Receiver events
-prevBtn.addEventListener('click', prevPage);
-nextBtn.addEventListener('click', nextPage);
-turnBtn.addEventListener('click', nextPage);
-playSequenceBtn.addEventListener('click', playSequence);
-replayBtn.addEventListener('click', () => {
-  messageTimers.forEach(timer => clearTimeout(timer));
-  messageTimers = [];
-  
-  // Hide tiles
-  document.querySelectorAll('.tile').forEach(tile => {
-    tile.classList.remove('show');
-  });
-  
-  setTimeout(playSequence, 300);
-});
-
-shareBtn.addEventListener('click', () => {
-  const currentURL = window.location.href;
-  
-  if (navigator.share) {
-    navigator.share({
-      title: 'A Beautiful Gift',
-      text: 'Someone shared a beautiful gift with me!',
-      url: currentURL
-    });
-  } else {
-    navigator.clipboard.writeText(currentURL)
-      .then(() => {
-        const originalText = shareBtn.innerHTML;
-        shareBtn.innerHTML = '✓ Copied!';
-        setTimeout(() => {
-          shareBtn.innerHTML = originalText;
-        }, 2000);
-      })
-      .catch(() => {
-        // Fallback
-        const textArea = document.createElement('textarea');
-        textArea.value = currentURL;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        
-        const originalText = shareBtn.innerHTML;
-        shareBtn.innerHTML = '✓ Copied!';
-        setTimeout(() => {
-          shareBtn.innerHTML = originalText;
-        }, 2000);
-      });
-  }
-});
-
-// Keyboard navigation
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === ' ') {
-    e.preventDefault();
-    nextPage();
-  } else if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    prevPage();
-  }
-});
-
-// Click on book to turn pages
-book.addEventListener('click', (e) => {
-  const rect = book.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  if (x > rect.width / 2) {
-    nextPage();
-  } else {
-    prevPage();
-  }
-});
-
-// ============================================
-// INITIALIZATION
-// ============================================
-function init() {
-  // Initialize background
-  initBackground();
-  
-  // Check URL parameters on load
-  const params = new URLSearchParams(window.location.search);
-  const hasGiftParams = params.has('from') || params.has('to');
-  
-  if (hasGiftParams) {
-    // We're viewing a gift
-    switchMode('receiver');
-    loadGiftFromURL();
-  } else {
-    // We're in sender mode
-    switchMode('sender');
-    
-    // Pre-fill with sample data for testing
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      fromInput.value = 'Ezekiel';
-      toInput.value = 'Grace';
-      mediaInput.value = 'dQw4w9WgXcQ';
-    }
-  }
-  
-  // Setup click handlers for mode buttons
-  modeBtns.forEach(btn => {
-    btn.addEventListener('click', () => switchMode(btn.dataset.mode));
-  });
-}
-
-// Start everything when page loads
-document.addEventListener('DOMContentLoaded', init);
-
-// Cleanup on page unload
-window.addEventListener('beforeunload', () => {
-  stopAllMedia();
-  messageTimers.forEach(timer => clearTimeout(timer));
-});
+  if(window.location.hash==='#receiver'){ initReceiver(); }
+})();
 </script>
 </body>
 </html>
